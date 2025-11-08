@@ -1,66 +1,49 @@
 # Claude Skills Collection
 
-Custom Claude skills for document processing and RTL language translation.
+Personal collection of custom Claude skills, created as I discover patterns and solve real-world problems.
 
-## Available Skills
+## Skills
 
-### 1. rtl-document-translation
+### Document Processing
 
+#### rtl-document-translation
 Translate structured documents (DOCX) to RTL languages (Arabic, Hebrew, Urdu) while preserving exact formatting, table structures, colors, and layouts.
 
-**Features:**
-- 3-level RTL formatting (text direction, alignment, layout)
-- Background color preservation
-- Multi-pass translation matching
-- Quote normalization
-- Nested table content extraction
-- Automated verification
+[See rtl-document-translation/README.md](rtl-document-translation/README.md)
 
-**Use Cases:**
-- Business reports
-- Financial forecasts
-- Evaluation documents
-- Forms and checklists
+#### docx-advanced-patterns
+Advanced python-docx patterns for nested tables, complex cell structures, and content extraction beyond basic `.text` property.
 
-[See rtl-document-translation/README.md for details](rtl-document-translation/README.md)
+[See docx-advanced-patterns/README.md](docx-advanced-patterns/README.md)
 
-### 2. docx-advanced-patterns
+---
 
-Advanced python-docx patterns for handling nested tables, complex cell structures, and content extraction beyond basic `.text` property.
-
-**Features:**
-- Nested table content extraction
-- Form and checklist processing
-- Complex cell structure handling
-- Checkbox character filtering
-
-**Use Cases:**
-- Government forms
-- Evaluation documents with rating scales
-- Surveys with multiple choice
-- Business checklists
-
-[See docx-advanced-patterns/README.md for details](docx-advanced-patterns/README.md)
+*More skills will be added as I discover and document new patterns.*
 
 ## Installation
 
-### In Claude Code
+### Quick Install (All Skills)
 
 ```bash
 # Clone this repository
 git clone https://github.com/belumume/claude-skills.git
 
-# Copy skills to Claude skills directory
+# Copy all skills to Claude
+cp -r claude-skills/*/ ~/.claude/skills/
+```
+
+### Individual Skill
+
+```bash
+# Install specific skill
 cp -r claude-skills/rtl-document-translation ~/.claude/skills/
-cp -r claude-skills/docx-advanced-patterns ~/.claude/skills/
 ```
 
 ### In Claude.ai
 
 1. Download this repository as ZIP
-2. Extract the skill folders
-3. Go to Settings → Skills → Upload Custom Skill
-4. Upload each skill folder
+2. Extract individual skill folders
+3. Settings → Skills → Upload Custom Skill
 
 ### Via API
 
@@ -69,74 +52,50 @@ from anthropic import Anthropic
 
 client = Anthropic()
 
-# Upload rtl-document-translation skill
-with open('rtl-document-translation.zip', 'rb') as f:
-    skill1 = client.skills.create(file=f)
-
-# Upload docx-advanced-patterns skill
-with open('docx-advanced-patterns.zip', 'rb') as f:
-    skill2 = client.skills.create(file=f)
+# Upload a skill
+with open('skill-name.zip', 'rb') as f:
+    skill = client.skills.create(file=f)
 ```
 
-## Dependencies
-
-Both skills require:
-- Python >= 3.8
-- python-docx >= 0.8.11
-
-RTL translation skill also needs:
-- Pillow >= 9.0.0 (for image comparisons)
-
-Install dependencies:
-```bash
-pip install python-docx>=0.8.11 Pillow>=9.0.0
-```
-
-## Usage Examples
-
-### RTL Translation
+## Repository Structure
 
 ```
-Translate "Financial_Report.docx" to Arabic using the rtl-document-translation skill.
-
-Requirements:
-- Preserve all table structures
-- Maintain color scheme
-- Font: Simplified Arabic
-```
-
-### Nested Table Extraction
-
-```
-Extract content from "form.docx" including all checkbox options
-using the docx-advanced-patterns skill.
+claude-skills/
+├── README.md                      # This file
+├── skill-name/                    # Each skill in its own directory
+│   ├── SKILL.md                   # Skill definition (required)
+│   ├── README.md                  # User documentation
+│   └── ...                        # Additional files
+└── another-skill/
+    └── ...
 ```
 
 ## Contributing
 
-Found a bug or have a suggestion? Please open an issue!
+**Want to add a skill?** Open a PR or issue!
 
-## Community Contribution
+**Found a bug?** Open an issue!
 
-The **nested table extraction pattern** from docx-advanced-patterns has been submitted to the official Anthropic docx skill:
-- **Pull Request:** https://github.com/anthropics/skills/pull/87
-- **Status:** Under review
+**Have a suggestion?** Open an issue!
+
+This is a personal collection, but contributions are welcome.
+
+## Community Contributions
+
+Skills or patterns from this repo that have been contributed upstream:
+
+- **Nested table extraction** → [Anthropic docx skill PR #87](https://github.com/anthropics/skills/pull/87) (under review)
 
 ## License
 
 MIT License - Free for personal and commercial use
 
-## Acknowledgments
+## About
 
-Developed from real-world document processing needs:
-- Arabic translation of business documents
-- Government forms with nested tables
-- Evaluation documents with complex layouts
-- RTL language formatting challenges
+This collection grows organically as I:
+- Encounter new problems
+- Discover useful patterns
+- Document reusable solutions
+- Learn new Claude capabilities
 
-## Support
-
-For issues or questions:
-- Open an issue in this repository
-- See individual skill README files for detailed documentation
-- python-docx docs: https://python-docx.readthedocs.io/
+Each skill is battle-tested on real-world use cases before being added.
