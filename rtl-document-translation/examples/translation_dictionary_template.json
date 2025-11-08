@@ -1,0 +1,57 @@
+{
+  "_comment": "Translation dictionary template for RTL document translation",
+  "_instructions": [
+    "1. Replace English values with target language translations",
+    "2. Keep self-mapped entries (A → A) for allowed English",
+    "3. Add both exact and normalized quote versions",
+    "4. Preserve numbers and scoring notation as-is"
+  ],
+
+  "Estimated costs": "[TRANSLATE]",
+  "Estimated revenue": "[TRANSLATE]",
+  "Financial forecast": "[TRANSLATE]",
+  "Business plan": "[TRANSLATE]",
+  "Executive summary": "[TRANSLATE]",
+
+  "High potential": "[TRANSLATE]",
+  "Moderate potential": "[TRANSLATE]",
+  "Low potential": "[TRANSLATE]",
+
+  "Month": "[TRANSLATE]",
+  "Year": "[TRANSLATE]",
+  "Total": "[TRANSLATE]",
+  "Subtotal": "[TRANSLATE]",
+
+  "A": "A",
+  "B": "B",
+  "C": "C",
+  "D": "D",
+  "E": "E",
+  "F": "F",
+  "G": "G",
+  "H": "H",
+  "I": "I",
+
+  "DVD": "DVD",
+  "CD": "CD",
+  "TV": "TV",
+  "USB": "USB",
+
+  "(-1)": "(-1)",
+  "(0)": "(0)",
+  "(+1)": "(+1)",
+  "-1": "-1",
+  "0": "0",
+  "1": "1",
+  "2": "2",
+  "3": "3",
+  "4": "4",
+  "5": "5",
+  "6": "6",
+  "7": "7",
+  "8": "8",
+  "9": "9",
+  "10": "10",
+  "11": "11",
+  "12": "12"
+}
