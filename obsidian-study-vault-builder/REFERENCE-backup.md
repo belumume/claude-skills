@@ -1,8 +1,8 @@
 # Obsidian Study Vault Patterns - Learned Skills
 
 **Purpose:** Reusable patterns and skills for creating academic study vaults with Claude Code
-**Extracted from:** Academic vault projects across multiple subjects
-**Status:** Battle-tested on 37-file vaults, 828KB content, multiple subjects (CS, engineering, business)
+**Extracted from:** Algorithms final exam prep project (2025-11-10)
+**Status:** Battle-tested on 37-file, 828KB comprehensive study vault
 
 ---
 
@@ -27,7 +27,7 @@
 - Allows course corrections early (cheap) vs late (expensive)
 - Builds trust for autonomous work later
 
-**Example:** Chapter 5 was empty (20KB missing). Caught during review, not at end.
+**Algorithms project:** Chapter 5 was empty (20KB missing). Caught during review, not at end.
 
 ---
 
@@ -54,7 +54,7 @@ vault/
 ├── CLAUDE.md           # Vault-wide conventions
 ├── School/
 │   ├── CLAUDE.md       # Academic work patterns
-│   └── [course-name]/
+│   └── algorithms/
 │       └── CLAUDE.md   # Project-specific details
 ```
 
@@ -72,7 +72,7 @@ vault/
 - List of projects in category
 - General workflow guidelines
 
-**Project ([course-name]/CLAUDE.md):**
+**Project (algorithms/CLAUDE.md):**
 - Specific course information
 - File inventory
 - Session progress log
@@ -204,8 +204,8 @@ vault/
 
 **DO:**
 - Create scenario-based problems (real-world contexts)
-- Ask "Describe approach to..." (design questions)
-- Require "Analyze trade-offs..." (show work)
+- Ask "Describe an algorithm to..." (design questions)
+- Require "Analyze the complexity..." (show work)
 - Test "Why does this work?" (justification)
 - Focus on pattern recognition (when to use technique X)
 
@@ -215,7 +215,7 @@ vault/
 - Ask only for definitions
 - Use multiple choice (unless exam format requires)
 
-**Why:** Matches how academic assessments actually test (from HW01 analysis)
+**Why:** Matches how algorithms courses actually test (from HW01 analysis)
 
 ---
 
@@ -287,7 +287,7 @@ See also:
 
 **Why:** Consistency aids navigation, sets expectations, looks professional
 
-**Example:** Chapters 1-4 were consistent, 5/8-10 needed standardization
+**Algorithms project:** Chapters 1-4 were consistent, 5/8-10 needed standardization
 
 ---
 
@@ -375,7 +375,7 @@ See also:
 4. **Verify completeness** (re-grep to confirm zero results)
 5. **Document the pattern** (add to memory for future)
 
-**Example from Example:**
+**Example from Algorithms project:**
 - User showed LaTeX pipes breaking one table
 - We grep'd for all `|V|` and `|E|` in file
 - Fixed all instances with `\|V\|` and `\|E\|`
@@ -509,7 +509,7 @@ Bad (sequential):
 
 **Content:**
 - [ ] Every slide topic covered
-- [ ] All key concepts explained with examples
+- [ ] All algorithms explained with examples
 - [ ] Complexity analysis included
 - [ ] Cross-references to related chapters
 
@@ -665,7 +665,7 @@ FORMATTING STANDARDS:
 ## Related Resources
 
 - `obsidian-visualization-resource-v3.md` - Formatting standards
-- `school/[course-name]/CLAUDE.md` - Detailed project case study
+- `school/algorithms/CLAUDE.md` - Detailed project case study
 - `school/CLAUDE.md` - Academic work patterns
 
 ---
