@@ -4,6 +4,13 @@ Personal collection of custom Claude skills, created as I discover patterns and 
 
 ## Skills
 
+### Knowledge Management & Education
+
+#### obsidian-study-vault-builder
+Generate comprehensive, mobile-compatible Obsidian study vaults from course materials using checkpoint-based workflow and applied learning principles. Battle-tested on 37-file academic vault.
+
+[See obsidian-study-vault-builder/README.md](obsidian-study-vault-builder/README.md)
+
 ### Document Processing
 
 #### rtl-document-translation
