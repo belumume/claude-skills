@@ -146,7 +146,7 @@ vault/
 | `[text](value)` interpreted as link | Use `{text}(value)` (curly braces) |
 | Special math symbols | Use ASCII equivalents or spell out |
 
-**Algorithms project fix:** Changed 5 diagrams from Unicode math to ASCII (`Θ(n)` → `Theta(n)`)
+**Example fix:** Changed 5 diagrams from Unicode math to ASCII (`Θ(n)` → `Theta(n)`)
 
 ---
 
@@ -318,13 +318,13 @@ See also:
 ## Learning Objectives (CO4)
 
 > [!note] Course Outcome CO4
-> **Compose divide-and-conquer algorithms to solve problems**
+> **Compose problem-solving approaches to solve problems**
 >
 > By the end of this chapter, you should be able to:
 > - Identify problems suitable for divide-and-conquer
 > - Apply merge sort and quick sort correctly
 > - Analyze time complexity using recurrence relations
-> - Design new divide-and-conquer algorithms
+> - Design new problem-solving approaches
 ```
 
 **Structure:**
@@ -466,7 +466,7 @@ Bad (sequential):
 - Fix only what's visible in screenshot
 - Assume it's isolated
 
-**Algorithms project examples:**
+**Example:**
 - User showed broken Big-Theta diagram → fixed all 3 bound diagrams
 - User showed � characters → fixed ALL Unicode in file
 - User showed broken table → fixed ALL tables in file
@@ -485,7 +485,7 @@ Bad (sequential):
 
 **Critical:** Some courses skip textbook chapters - verify actual coverage
 
-**Algorithms project error:** Assumed chapters 1-10 sequential. Actually 1-5, 8-10 (no 6-7).
+**Example error:** Assumed chapters 1-10 sequential. Actually 1-5, 8-10 (no 6-7).
 
 ---
 
@@ -499,7 +499,7 @@ Bad (sequential):
 
 **Create practice problems matching that style**
 
-**Algorithms project insight:** Instructor tests applied understanding (scenario-based), not definitions
+**Key insight:** Instructor tests applied understanding (scenario-based), not definitions
 
 ---
 
@@ -671,5 +671,5 @@ FORMATTING STANDARDS:
 ---
 
 **Last Updated:** 2025-11-10
-**Status:** Extracted from successful 37-file algorithms vault project
+**Status:** Validated on academic vault projects across multiple subjects
 **Next Use:** Apply patterns to next course study vault
