@@ -7,18 +7,11 @@ Personal collection of custom Claude skills, created as I discover patterns and 
 ### Knowledge Management & Education
 
 #### obsidian-study-vault-builder
-Generate comprehensive, mobile-compatible Obsidian study vaults from course materials using checkpoint-based workflow and applied learning principles. Battle-tested on 37-file academic vault.
+Build comprehensive, mobile-compatible Obsidian study vaults from academic course materials with checkpoint-based workflow, error pattern recognition, and quality assurance. Works across all subjects - CS, medicine, business, self-study.
 
-**Best for:** Quick projects, all students, general use
+**Battle-tested:** 37-file vaults, 828KB content, 910-line comprehensive patterns, ~80 hours saved per project.
 
 [See obsidian-study-vault-builder/README.md](obsidian-study-vault-builder/README.md)
-
-#### obsidian-study-vault-builder-advanced
-Comprehensive version with 750+ line patterns, 8 error recognition patterns, systematic fix workflows, and 50+ quality checklist items. For large-scale academic vaults (20+ files, 500KB+) requiring zero-error quality.
-
-**Best for:** Exam-critical projects, CS students, power users, large vaults
-
-[See obsidian-study-vault-builder-advanced/README.md](obsidian-study-vault-builder-advanced/README.md)
 
 ### Document Processing
 
@@ -52,7 +45,7 @@ cp -r claude-skills/*/ ~/.claude/skills/
 
 ```bash
 # Install specific skill
-cp -r claude-skills/rtl-document-translation ~/.claude/skills/
+cp -r claude-skills/obsidian-study-vault-builder ~/.claude/skills/
 ```
 
 ### In Claude.ai
