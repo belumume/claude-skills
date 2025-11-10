@@ -9,7 +9,16 @@ Personal collection of custom Claude skills, created as I discover patterns and 
 #### obsidian-study-vault-builder
 Generate comprehensive, mobile-compatible Obsidian study vaults from course materials using checkpoint-based workflow and applied learning principles. Battle-tested on 37-file academic vault.
 
+**Best for:** Quick projects, all students, general use
+
 [See obsidian-study-vault-builder/README.md](obsidian-study-vault-builder/README.md)
+
+#### obsidian-study-vault-builder-advanced
+Comprehensive version with 750+ line patterns, 8 error recognition patterns, systematic fix workflows, and 50+ quality checklist items. For large-scale academic vaults (20+ files, 500KB+) requiring zero-error quality.
+
+**Best for:** Exam-critical projects, CS students, power users, large vaults
+
+[See obsidian-study-vault-builder-advanced/README.md](obsidian-study-vault-builder-advanced/README.md)
 
 ### Document Processing
 
