@@ -145,6 +145,9 @@ vault/
 | `≥` breaks Mermaid | Use `>=` (ASCII) |
 | `[text](value)` interpreted as link | Use `{text}(value)` (curly braces) |
 | Special math symbols | Use ASCII equivalents or spell out |
+| `&` renders as `&amp;` in **mindmaps only** | Use Unicode fullwidth `＆` (U+FF06) |
+
+**Note on ampersands:** Known Mermaid bug (issue #6308, fixed in v11+ but Obsidian hasn't updated). Only affects mindmap diagrams - flowcharts/graphs render `&` correctly. Unicode fullwidth ampersand (＆) looks identical and bypasses the bug.
 
 **Example fix:** Changed 5 diagrams from Unicode math to ASCII (`Θ(n)` → `Theta(n)`)
 
