@@ -146,8 +146,11 @@ vault/
 | `[text](value)` interpreted as link | Use `{text}(value)` (curly braces) |
 | Special math symbols | Use ASCII equivalents or spell out |
 | `&` renders as `&amp;` in **mindmaps only** | Use Unicode fullwidth `＆` (U+FF06) |
+| `[1. Text]` triggers "Unsupported markdown: list" | Use `["Step 1:<br/>Text"]` with line break |
 
 **Note on ampersands:** Known Mermaid bug (issue #6308, fixed in v11+ but Obsidian hasn't updated). Only affects mindmap diagrams - flowcharts/graphs render `&` correctly. Unicode fullwidth ampersand (＆) looks identical and bypasses the bug.
+
+**Note on numbered lists in nodes:** Mermaid interprets `[1. Text]` as markdown ordered list syntax, which isn't supported in node labels. Use `["Step 1:<br/>Text"]` format instead, which follows vault's existing multi-line label convention and renders correctly.
 
 **Example fix:** Changed 5 diagrams from Unicode math to ASCII (`Θ(n)` → `Theta(n)`)
 
