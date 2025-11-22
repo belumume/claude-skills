@@ -15,15 +15,22 @@ Build comprehensive, mobile-compatible Obsidian study vaults from academic cours
 
 ### Document Processing
 
+#### docx-template-filling
+Fill DOCX template forms programmatically while preserving 100% of original structure - logos, footers, styles, metadata. Zero-artifact insertion for forms, applications, and standardized documents. Output indistinguishable from manual filling.
+
+**Key features:** Anchor-based XML insertion, structure preservation, table repositioning, executable inspection script.
+
+[See docx-template-filling/](docx-template-filling/)
+
+#### docx-advanced-patterns
+Advanced python-docx patterns for nested tables, complex cell structures, and content extraction beyond basic `.text` property. Complements official docx skill with specialized read techniques.
+
+[See docx-advanced-patterns/README.md](docx-advanced-patterns/README.md)
+
 #### rtl-document-translation
 Translate structured documents (DOCX) to RTL languages (Arabic, Hebrew, Urdu) while preserving exact formatting, table structures, colors, and layouts.
 
 [See rtl-document-translation/README.md](rtl-document-translation/README.md)
-
-#### docx-advanced-patterns
-Advanced python-docx patterns for nested tables, complex cell structures, and content extraction beyond basic `.text` property.
-
-[See docx-advanced-patterns/README.md](docx-advanced-patterns/README.md)
 
 ---
 
