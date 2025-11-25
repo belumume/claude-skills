@@ -55,11 +55,23 @@ cp -r claude-skills/*/ ~/.claude/skills/
 cp -r claude-skills/obsidian-study-vault-builder ~/.claude/skills/
 ```
 
-### In Claude.ai
+### In Claude Web/Desktop
 
-1. Download this repository as ZIP
-2. Extract individual skill folders
-3. Settings → Skills → Upload Custom Skill
+Ready-to-upload ZIPs are in `web-desktop-exports/`:
+
+```
+web-desktop-exports/
+├── docx-advanced-patterns.zip
+├── docx-template-filling.zip
+├── obsidian-study-vault-builder.zip
+└── rtl-document-translation.zip
+```
+
+1. Download the ZIP for the skill you want
+2. Go to Settings → Capabilities
+3. Upload the ZIP file
+
+**Note:** Web/desktop exports have stripped frontmatter (name + description only, <200 chars) to meet Claude web/desktop requirements. The original Claude Code skills in the root folders retain full frontmatter (version, dependencies, tags).
 
 ### Via API
 
@@ -78,12 +90,15 @@ with open('skill-name.zip', 'rb') as f:
 ```
 claude-skills/
 ├── README.md                      # This file
-├── skill-name/                    # Each skill in its own directory
+├── skill-name/                    # Claude Code skills (full frontmatter)
 │   ├── SKILL.md                   # Skill definition (required)
 │   ├── README.md                  # User documentation
 │   └── ...                        # Additional files
-└── another-skill/
-    └── ...
+├── another-skill/
+│   └── ...
+└── web-desktop-exports/           # Claude web/desktop versions
+    ├── skill-name.zip             # Ready-to-upload ZIPs
+    └── skill-name/                # Stripped SKILL.md + supporting files
 ```
 
 ## Contributing
