@@ -15,6 +15,11 @@ Build comprehensive, mobile-compatible Obsidian study vaults from academic cours
 
 ### Document Processing
 
+#### document-quality-standards
+Quality patterns for all document operations (DOCX, PDF, XLSX, PPTX). Visual verification workflow, typography hygiene, formula best practices. Patterns from OpenAI skills that Anthropic's document-skills plugin lacks.
+
+[See document-quality-standards/](document-quality-standards/)
+
 #### docx-template-filling
 Fill DOCX template forms programmatically while preserving 100% of original structure - logos, footers, styles, metadata. Zero-artifact insertion for forms, applications, and standardized documents. Output indistinguishable from manual filling.
 
@@ -61,6 +66,7 @@ Ready-to-upload ZIPs are in `web-desktop-exports/`:
 
 ```
 web-desktop-exports/
+├── document-quality-standards.zip
 ├── docx-advanced-patterns.zip
 ├── docx-template-filling.zip
 ├── obsidian-study-vault-builder.zip
