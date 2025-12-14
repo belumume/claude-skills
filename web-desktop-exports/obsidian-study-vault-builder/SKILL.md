@@ -2,7 +2,6 @@
 name: obsidian-study-vault-builder
 description: Build mobile-compatible Obsidian study vaults from academic materials with checkpoint workflow and QA. Battle-tested on 800KB+ projects. Works across CS, medicine, business.
 ---
-
 # Obsidian Study Vault Builder
 
 > **Comprehensive patterns for building exam-ready study vaults in Obsidian**
@@ -27,6 +26,7 @@ Invoke when building academic study materials in Obsidian for:
 - STEM (physics, chemistry, engineering)
 - Humanities (history, literature, philosophy)
 
+---
 
 ## Core Methodology
 
@@ -54,6 +54,7 @@ Three-level context structure (see REFERENCE.md for details):
 - **Level 2:** Subject folder (`School/CLAUDE.md`)
 - **Level 3:** Course project (`School/algorithms/CLAUDE.md`)
 
+---
 
 ## Universal Obsidian Features (Mobile-First)
 
@@ -62,6 +63,7 @@ Three-level context structure (see REFERENCE.md for details):
 
 **See REFERENCE.md for complete patterns.**
 
+---
 
 ## Error Pattern Recognition (8 Patterns)
 
@@ -87,6 +89,7 @@ Three-level context structure (see REFERENCE.md for details):
 
 **Complete systematic fix approach in REFERENCE.md.**
 
+---
 
 ## Content Quality Patterns
 
@@ -109,6 +112,7 @@ Link related concepts everywhere with `[[links]]`.
 
 **See REFERENCE.md for complete examples.**
 
+---
 
 ## Standard Vault Structure
 
@@ -120,6 +124,7 @@ course-name/
 └── mock-exams/           # Practice tests + solutions
 ```
 
+---
 
 ## Quality Assurance (Summary)
 
@@ -132,6 +137,7 @@ Before marking complete:
 
 **See REFERENCE.md for complete 50+ item checklist.**
 
+---
 
 ## Common Anti-Patterns
 
@@ -140,6 +146,7 @@ Before marking complete:
 3. **Forgetting Mobile Users** → Universal features only
 4. **Surface-Level Practice** → Scenario-based with reasoning
 
+---
 
 ## Success Metrics
 
@@ -152,6 +159,7 @@ Before marking complete:
 - Practice problems: 80-100
 - Mock exams: 2-3
 
+---
 
 ## Integration Patterns
 
@@ -165,6 +173,7 @@ git commit -m "Complete Chapter 1 (checkpoint)"
 git commit -m "Complete: Study vault (37 files, 828KB)"
 ```
 
+---
 
 ## Additional Resources
 
@@ -182,6 +191,7 @@ git commit -m "Complete: Study vault (37 files, 828KB)"
 - Anti-patterns to avoid
 - Time investment breakdowns
 
+---
 
 **Battle-tested on:**
 - 37-file academic vaults
