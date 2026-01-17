@@ -2,6 +2,13 @@
 name: ralph-loop
 description: Activate autonomous Ralph Wiggum loop mode for iterative task completion. Use when you have a well-defined task with clear completion criteria that benefits from persistent, autonomous execution.
 trigger: When user invokes /ralph, mentions "ralph mode", "ralph loop", "autonomous loop", or wants to run Claude iteratively until a task is complete
+version: 1.0.0
+tags:
+  - automation
+  - workflow
+  - claude-code-only
+  - hooks
+  - autonomous
 ---
 
 # Ralph Wiggum Loop Mode
