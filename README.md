@@ -39,7 +39,7 @@ Translate structured documents (DOCX) to RTL languages (Arabic, Hebrew, Urdu) wh
 
 ### Workflow Automation
 
-#### ralph-loop ⚡ Claude Code Only
+#### ralph-loop (Claude Code Only)
 Autonomous iteration mode that runs Claude in a loop until task completion. Uses Stop hooks to detect incomplete work and restart sessions automatically. Ideal for well-defined tasks with clear completion criteria (TDD cycles, migrations, batch processing).
 
 **Requires:** Claude Code CLI + Stop hook (`ralph-stop-hook.py`)
