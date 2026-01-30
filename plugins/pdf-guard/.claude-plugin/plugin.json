@@ -1,0 +1,10 @@
+{
+  "name": "pdf-guard",
+  "version": "1.0.0",
+  "description": "Prevents PDF context crashes with extraction enforcement and cumulative read tracking",
+  "author": {"name": "belumume"},
+  "repository": "https://github.com/belumume/claude-skills",
+  "license": "MIT",
+  "hooks": "./hooks/hooks.json",
+  "skills": "./skills/"
+}

@@ -1,0 +1,10 @@
+{
+  "PreToolUse": [{
+    "matcher": "Read",
+    "hooks": [
+      {"type": "command", "command": "python \"$CLAUDE_PLUGIN_DIR/hooks/pdf-blocker.py\"", "timeout": 5},
+      {"type": "command", "command": "python \"$CLAUDE_PLUGIN_DIR/hooks/large-file-guard.py\"", "timeout": 5},
+      {"type": "command", "command": "python \"$CLAUDE_PLUGIN_DIR/hooks/context-tracker.py\"", "timeout": 5}
+    ]
+  }]
+}
