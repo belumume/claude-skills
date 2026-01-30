@@ -35,6 +35,11 @@ Translate structured documents (DOCX) to RTL languages while preserving formatti
 
 ### Workflow Automation
 
+#### rlm-orchestrator
+RLM-style orchestration for tasks exceeding single context window limits. Based on [arXiv:2512.24601](https://arxiv.org/abs/2512.24601). Claude Code only.
+
+[See rlm-orchestrator/](rlm-orchestrator/)
+
 #### ralph-loop
 Autonomous iteration mode using Stop hooks. Claude Code only.
 
