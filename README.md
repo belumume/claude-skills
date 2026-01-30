@@ -1,198 +1,86 @@
 # Claude Skills Collection
 
-Personal collection of custom Claude skills, created as I discover patterns and solve real-world problems.
+Personal collection of custom Claude skills and plugins.
 
 ## Skills
 
 ### Knowledge Management & Education
 
 #### obsidian-study-vault-builder
-Build comprehensive, mobile-compatible Obsidian study vaults from academic course materials with checkpoint-based workflow, error pattern recognition, and quality assurance. Works across all subjects - CS, medicine, business, self-study.
+Build comprehensive, mobile-compatible Obsidian study vaults from academic course materials with checkpoint-based workflow, error pattern recognition, and quality assurance.
 
-**Battle-tested:** 37-file vaults, 828KB content, 910-line comprehensive patterns, ~80 hours saved per project.
-
-[See obsidian-study-vault-builder/README.md](obsidian-study-vault-builder/README.md)
+[See obsidian-study-vault-builder/](obsidian-study-vault-builder/)
 
 ### Document Processing
 
 #### document-quality-standards
-Quality patterns for all document operations (DOCX, PDF, XLSX, PPTX). Visual verification workflow, typography hygiene, formula best practices. Patterns from OpenAI skills that Anthropic's document-skills plugin lacks.
+Quality patterns for all document operations (DOCX, PDF, XLSX, PPTX).
 
 [See document-quality-standards/](document-quality-standards/)
 
 #### docx-template-filling
-Fill DOCX template forms programmatically while preserving 100% of original structure - logos, footers, styles, metadata. Zero-artifact insertion for forms, applications, and standardized documents. Output indistinguishable from manual filling.
-
-**Key features:** Anchor-based XML insertion, structure preservation, table repositioning, executable inspection script.
+Fill DOCX template forms programmatically while preserving 100% of original structure.
 
 [See docx-template-filling/](docx-template-filling/)
 
 #### docx-advanced-patterns
-Advanced python-docx patterns for nested tables, complex cell structures, and content extraction beyond basic `.text` property. Complements official docx skill with specialized read techniques.
+Advanced python-docx patterns for nested tables and complex cell structures.
 
-[See docx-advanced-patterns/README.md](docx-advanced-patterns/README.md)
+[See docx-advanced-patterns/](docx-advanced-patterns/)
 
 #### rtl-document-translation
-Translate structured documents (DOCX) to RTL languages (Arabic, Hebrew, Urdu) while preserving exact formatting, table structures, colors, and layouts.
+Translate structured documents (DOCX) to RTL languages while preserving formatting.
 
-[See rtl-document-translation/README.md](rtl-document-translation/README.md)
+[See rtl-document-translation/](rtl-document-translation/)
 
 ### Workflow Automation
 
-#### ralph-loop (Claude Code Only)
-Autonomous iteration mode that runs Claude in a loop until task completion. Uses Stop hooks to detect incomplete work and restart sessions automatically. Ideal for well-defined tasks with clear completion criteria (TDD cycles, migrations, batch processing).
+#### ralph-loop
+Autonomous iteration mode using Stop hooks. Claude Code only.
 
-**Requires:** Claude Code CLI + Stop hook (`ralph-stop-hook.py`)
+[See ralph-loop/](ralph-loop/)
 
-**Not available for Claude web/desktop** - depends on hooks infrastructure.
+## Plugins
 
-[See ralph-loop/SKILL.md](ralph-loop/SKILL.md)
+#### pdf-guard
+Prevents context crashes from PDF reads. Blocks direct PDF reads, warns at 100KB, blocks at 500KB, tracks cumulative reads.
 
----
+```bash
+claude plugin install pdf-guard@belumume/claude-skills
+```
 
-*More skills will be added as I discover and document new patterns.*
+[See plugins/pdf-guard/](plugins/pdf-guard/)
 
 ## Installation
 
-### Quick Install (All Skills)
-
+### Skills
 ```bash
-# Clone this repository
-git clone https://github.com/belumume/claude-skills.git
-
-# Copy all skills to Claude
-cp -r claude-skills/*/ ~/.claude/skills/
+cp -r claude-skills/skill-name ~/.claude/skills/
 ```
 
-### Individual Skill
-
+### Plugins
 ```bash
-# Install specific skill
-cp -r claude-skills/obsidian-study-vault-builder ~/.claude/skills/
+claude plugin install plugin-name@belumume/claude-skills
 ```
 
-### In Claude Web/Desktop
+### Web/Desktop
+Upload ZIPs from `web-desktop-exports/` via Settings → Capabilities.
 
-Ready-to-upload ZIPs are in `web-desktop-exports/`:
-
-```
-web-desktop-exports/
-├── document-quality-standards.zip
-├── docx-advanced-patterns.zip
-├── docx-template-filling.zip
-├── obsidian-study-vault-builder.zip
-└── rtl-document-translation.zip
-```
-
-1. Download the ZIP for the skill you want
-2. Go to Settings → Capabilities
-3. Upload the ZIP file
-
-**Note:** Web/desktop exports have stripped frontmatter (name + description only, <200 chars) to meet Claude web/desktop requirements. The original Claude Code skills in the root folders retain full frontmatter (version, dependencies, tags).
-
-### Via API
-
-```python
-from anthropic import Anthropic
-
-client = Anthropic()
-
-# Upload a skill
-with open('skill-name.zip', 'rb') as f:
-    skill = client.skills.create(file=f)
-```
-
-## Repository Structure
+## Structure
 
 ```
 claude-skills/
-├── README.md
-├── skill-name/                    # Skills (SKILL.md + supporting files)
-├── plugins/                       # Plugins (bundled components)
+├── skill-name/                    # Skills
+│   └── SKILL.md
+├── plugins/                       # Plugins
 │   └── plugin-name/
 │       ├── .claude-plugin/plugin.json
 │       ├── hooks/
 │       ├── scripts/
 │       └── skills/
-└── web-desktop-exports/           # Claude web/desktop ZIPs
+└── web-desktop-exports/           # Web/desktop ZIPs
 ```
-
----
-
-
-
-```
-claude-skills/
-├── README.md                      # This file
-├── skill-name/                    # Claude Code skills (full frontmatter)
-│   ├── SKILL.md                   # Skill definition (required)
-│   ├── README.md                  # User documentation
-│   └── ...                        # Additional files
-├── another-skill/
-│   └── ...
-└── web-desktop-exports/           # Claude web/desktop versions
-    ├── skill-name.zip             # Ready-to-upload ZIPs
-    └── skill-name/                # Stripped SKILL.md + supporting files
-```
-
-## Contributing
-
-**Want to add a skill?** Open a PR or issue!
-
-**Found a bug?** Open an issue!
-
-**Have a suggestion?** Open an issue!
-
-This is a personal collection, but contributions are welcome.
-
-## Community Contributions
-
-Skills or patterns from this repo that have been contributed upstream:
-
-- **Nested table extraction** → [Anthropic docx skill PR #87](https://github.com/anthropics/skills/pull/87) (under review)
 
 ## License
 
-MIT License - Free for personal and commercial use
-
-## About
-
-This collection grows organically as I:
-- Encounter new problems
-- Discover useful patterns
-- Document reusable solutions
-- Learn new Claude capabilities
-
-Each skill is battle-tested on real-world use cases before being added.
-
----
-
-## Plugins
-
-Plugins bundle multiple components (skills + hooks + scripts) for distribution via Claude Code's plugin system.
-
-### pdf-guard
-
-Prevents Claude Code context crashes from PDF reads.
-
-**Features:**
-- Blocks direct PDF reads (forces extraction first)
-- Warns at 100KB, blocks at 500KB
-- Tracks cumulative reads (warns 100K tokens, blocks 150K)
-
-**Install:**
-```bash
-claude plugin install pdf-guard@belumume/claude-skills
-```
-
-[See plugins/pdf-guard/README.md](plugins/pdf-guard/README.md)
-
----
-
-### Skills vs Plugins
-
-| Type | What It Is | Best For |
-|------|------------|----------|
-| Skill | Single SKILL.md with instructions | Project-specific, simple tasks |
-| Plugin | Package with skills + hooks + scripts | Reusable toolkits, team sharing |
-
+MIT
