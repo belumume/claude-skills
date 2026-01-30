@@ -10,7 +10,7 @@ import sys
 
 # Thresholds (in bytes)
 WARN_SIZE = 100_000  # 100KB - warn and suggest chunking
-BLOCK_SIZE = 500_000  # 500KB - block and require explicit handling
+BLOCK_SIZE = 200_000  # 200KB - block before Claude Code's 256KB internal limit
 
 # Estimated tokens per byte (rough: 1 token ≈ 4 chars)
 BYTES_PER_TOKEN = 4
