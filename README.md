@@ -43,7 +43,7 @@ Autonomous iteration mode using Stop hooks. Claude Code only.
 ## Plugins
 
 #### pdf-guard
-Prevents context crashes from PDF reads. Blocks direct PDF reads, warns at 100KB, blocks at 500KB, tracks cumulative reads.
+Prevents context crashes from PDF reads. Blocks direct PDF reads, warns at 100KB, blocks at 200KB, tracks cumulative reads.
 
 ```bash
 claude plugin install pdf-guard@belumume/claude-skills
