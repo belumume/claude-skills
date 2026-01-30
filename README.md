@@ -106,6 +106,23 @@ with open('skill-name.zip', 'rb') as f:
 
 ```
 claude-skills/
+├── README.md
+├── skill-name/                    # Skills (SKILL.md + supporting files)
+├── plugins/                       # Plugins (bundled components)
+│   └── plugin-name/
+│       ├── .claude-plugin/plugin.json
+│       ├── hooks/
+│       ├── scripts/
+│       └── skills/
+└── web-desktop-exports/           # Claude web/desktop ZIPs
+```
+
+---
+
+
+
+```
+claude-skills/
 ├── README.md                      # This file
 ├── skill-name/                    # Claude Code skills (full frontmatter)
 │   ├── SKILL.md                   # Skill definition (required)
@@ -147,3 +164,35 @@ This collection grows organically as I:
 - Learn new Claude capabilities
 
 Each skill is battle-tested on real-world use cases before being added.
+
+---
+
+## Plugins
+
+Plugins bundle multiple components (skills + hooks + scripts) for distribution via Claude Code's plugin system.
+
+### pdf-guard
+
+Prevents Claude Code context crashes from PDF reads.
+
+**Features:**
+- Blocks direct PDF reads (forces extraction first)
+- Warns at 100KB, blocks at 500KB
+- Tracks cumulative reads (warns 100K tokens, blocks 150K)
+
+**Install:**
+```bash
+claude plugin install pdf-guard@belumume/claude-skills
+```
+
+[See plugins/pdf-guard/README.md](plugins/pdf-guard/README.md)
+
+---
+
+### Skills vs Plugins
+
+| Type | What It Is | Best For |
+|------|------------|----------|
+| Skill | Single SKILL.md with instructions | Project-specific, simple tasks |
+| Plugin | Package with skills + hooks + scripts | Reusable toolkits, team sharing |
+
