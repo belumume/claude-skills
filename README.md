@@ -33,6 +33,13 @@ Translate structured documents (DOCX) to RTL languages while preserving formatti
 
 [See rtl-document-translation/](rtl-document-translation/)
 
+### Project Analysis
+
+#### project-retrospective
+Multi-agent retrospective for Claude Code projects. Dispatches parallel opus historians to extract structured data from session exports, then synthesizes findings into a comprehensive analysis with decision logs, mistake patterns, and user teaching moments. Supports `last-N` argument for scoped analysis. Requires session exports via `/export`.
+
+[See project-retrospective/](project-retrospective/)
+
 ### Workflow Automation
 
 #### rlm-orchestrator
