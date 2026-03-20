@@ -1,23 +1,35 @@
 ---
 name: project-retrospective
 description: Use when a project has accumulated multiple sessions and needs a comprehensive retrospective — after milestones, when vision drift is suspected, before starting a new phase, or periodically every 3-5 sessions. Also use when the user says "retro", "retrospective", "project history", "what changed", "how did we get here", or when MEMORY.md feels stale and disconnected from what actually happened.
-argument-hint: [last-N]
+argument-hint: [full | since-last-retro | last-N]
 ---
 
 # Project Retrospective
 
-Analyze a project's full session history by dispatching parallel historian agents to read each export, then synthesizing their findings into a structured analysis document. The value is in the **extraction criteria** — domain-specific signals tuned for Claude Code session exports, not generic summarization.
+Analyze a project's session history by dispatching parallel historian agents to read each export, then synthesizing their findings into a structured analysis document. The value is in the **extraction criteria** — domain-specific signals tuned for Claude Code session exports, not generic summarization.
+
+## Modes
+
+Two modes, selected by argument:
+
+| Mode | When to Use |
+|------|-------------|
+| **full** (default) | Phase transitions, major incidents, no prior retro exists, first retro for a project |
+| **since-last-retro** | Periodic check-ins (every 3-5 sessions), ongoing projects with an existing retro baseline |
+
+**Full** re-analyzes all exports and produces a standalone superset document. **Incremental** reads the prior retro as baseline and only dispatches historians for new exports — O(delta) instead of O(N).
 
 ## Arguments
 
-Parse `$ARGUMENTS` to determine scope:
+Parse `$ARGUMENTS` to determine scope and mode:
 
 | Argument | Behavior |
 |----------|----------|
-| *(none)* | Analyze ALL exports in the project directory |
-| `last-N` | Analyze only the N most recent exports (by filename date prefix) |
+| *(none)* or `full` | **Full mode.** Analyze ALL exports in the project directory |
+| `since-last-retro` | **Incremental mode.** Find prior retro, analyze only new exports since then |
+| `last-N` | **Full mode** but scoped to the N most recent exports only |
 
-If the argument doesn't match `last-N`, echo it back and ask what was meant.
+If the argument doesn't match any of the above, echo it back and ask what was meant.
 
 ## Phase 1: Discover & Validate Exports
 
@@ -32,9 +44,35 @@ Sort by filename (date-prefixed = chronological). If `last-N` was provided, take
 
 **Some exports missing:** List what was found, proceed with available files, and note gaps in the final output.
 
+## Phase 1.5: Detect Prior Retro (incremental mode only)
+
+Skip this phase entirely in full mode.
+
+In incremental mode, find the most recent full retro document:
+```
+docs/retros/*-PROJECT-HISTORY-ANALYSIS.md
+```
+
+**Fallback for pre-v2 projects:** If `docs/retros/` has no matches, also check `docs/*-PROJECT-HISTORY-ANALYSIS.md` (pre-v2 output path). If found there, move it to `docs/retros/` first, then proceed.
+
+**If no prior retro exists anywhere:** Report this and switch to full mode automatically. Incremental requires a baseline.
+
+**If prior retro found:**
+1. Read it fully — it contains the synthesized analysis of previously-analyzed sessions.
+2. Extract the session range it covers (from the `**Sessions:** S1-S11` header line).
+3. Determine which exports are NEW (not covered by the prior retro's session range).
+4. If zero new exports exist since the prior retro, report "nothing new to analyze" and stop.
+
+**Chaining semantics:** Incremental always chains from the last *full* retro (ANALYSIS file), never from a prior *incremental update* (UPDATE file). This means multiple incremental updates can accumulate between full retros. Each delta is independently interpretable against the same baseline. To reset the chain, run a full retro.
+
+**Gaps in prior retro:** If the prior full retro noted missing exports (sessions it couldn't analyze), those gaps are permanent unless a new full retro is run. Incremental mode does not backfill gaps — it only analyzes exports newer than the prior retro's session range.
+
 ## Phase 2: Spawn Historians (Parallel Background Agents)
 
-Launch N background agents (one per export). Use the literal `Agent` tool (not TaskCreate, not TeamCreate) with these exact parameters:
+**Full mode:** Launch one background agent per export (all exports).
+**Incremental mode:** Launch one background agent per NEW export only.
+
+Use the literal `Agent` tool (not TaskCreate, not TeamCreate) with these exact parameters:
 
 ```
 Agent(
@@ -93,9 +131,11 @@ write any files.
 
 ## Phase 3: Synthesize
 
-After ALL historians complete, combine reports into a single analysis. The orchestrator (main conversation) or a dedicated synthesizer agent produces:
+After ALL historians complete, combine reports into a single analysis. The orchestrator (main conversation) or a dedicated synthesizer agent produces the output.
 
-### Synthesis Template
+**Full mode** uses the Full Synthesis Template. **Incremental mode** uses the Incremental Synthesis Template.
+
+### Full Synthesis Template
 
 ```markdown
 # {Project Name} — Project History Analysis
@@ -132,12 +172,52 @@ Justified from FULL history, not just latest MEMORY.md. If history
 suggests a different priority than MEMORY.md, say so.
 ```
 
+### Incremental Synthesis Template
+
+```markdown
+# {Project Name} — Project History Update
+
+**Generated:** YYYY-MM-DD HH:MM UTC | **New sessions:** range | **Prior baseline:** prior-retro-filename
+**Cumulative sessions:** full-range | **Agents:** N+1
+
+## Prior Retro Summary
+One-paragraph summary of what the prior retro established as the
+project state, key patterns, and outstanding issues.
+
+## 1. What Changed Since Last Retro
+New decisions, direction shifts, scope changes in the delta sessions.
+Reference prior retro for context where relevant.
+
+## 2. New Decisions
+| Session | Decision | Rationale | Status |
+
+## 3. Correction Pattern Update
+Carry forward the prior retro's correction patterns. For each pattern:
+- Prior count + new count = cumulative total
+- Trend: improving / stable / worsening (compare per-session rate)
+- Any NEW patterns not in the prior retro get their own entry.
+
+## 4. New Teaching Moments
+Lessons from new sessions only. Note which are genuinely new vs
+reinforcement of prior patterns.
+
+## 5. Current State
+Updated inventory: what's on main, what's pending, what changed.
+
+## 6. Recommended Next Step
+Justified from cumulative history (prior retro + new sessions).
+```
+
 **Cross-session deduplication:** A decision in S1 referenced in S3 appears once with both session numbers.
 
 ## Phase 4: Write & Integrate
 
 ### Write the analysis
-`docs/YYYY-MM-DD-PROJECT-HISTORY-ANALYSIS.md`
+
+Output to the retros directory (create if needed):
+
+**Full mode:** `docs/retros/YYYY-MM-DD-PROJECT-HISTORY-ANALYSIS.md`
+**Incremental mode:** `docs/retros/YYYY-MM-DD-PROJECT-HISTORY-UPDATE.md`
 
 ### Update MEMORY.md
 1. Add a reference to the retrospective document.
@@ -148,7 +228,14 @@ suggests a different priority than MEMORY.md, say so.
 3. Threshold: happened twice, or high-severity once.
 
 ### Commit
-Commit the analysis and any memory updates. Push to main — analysis documents are not code changes.
+Commit the analysis and any memory updates.
+
+## Deletion Semantics
+
+| Mode | Prior retro safe to delete? | Why |
+|------|-----------------------------|-----|
+| **Full** | Yes | Full output is a superset — contains everything the prior retro had plus more. Prior becomes redundant. |
+| **Incremental** | **Never** | Incremental output is a delta — it references and builds on the prior retro. Deleting the prior loses the deep extraction from earlier sessions permanently. The chain of incremental retros forms a linked history. |
 
 ## Anti-Patterns
 
@@ -159,3 +246,6 @@ Commit the analysis and any memory updates. Push to main — analysis documents 
 - **TeamCreate for historians** — race conditions with member registration. Use background Agents.
 - **Haiku/sonnet for historians** — exports are 50-200KB. Cheaper models miss nuance in long documents.
 - **Summarizing instead of extracting** — "summarize the session" produces generic output. The 9-point extraction template IS the skill's value.
+- **Re-analyzing old sessions in incremental mode** — the whole point of incremental is O(delta). If you're spawning historians for sessions the prior retro already covers, you're doing it wrong.
+- **Deleting prior retro after incremental** — incremental output is a delta, not a superset. The chain breaks.
+- **Running incremental without a baseline** — if no prior retro exists, switch to full mode. Don't produce a delta with nothing to delta against.
