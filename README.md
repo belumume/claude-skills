@@ -33,6 +33,13 @@ Translate structured documents (DOCX) to RTL languages while preserving formatti
 
 [See rtl-document-translation/](rtl-document-translation/)
 
+### Architecture & Decision Making
+
+#### deep-brainstorming
+Research-hardened brainstorming for high-stakes architecture decisions. 8-phase process with multi-round research, 9-type bias audit, adversarial review, claim provenance tracking, and verification chain termination. Addresses agent failure modes: token exhaustion, hallucinated benchmarks, consensus blindspots, and premature negative claims.
+
+[See deep-brainstorming/](deep-brainstorming/)
+
 ### Project Analysis
 
 #### project-retrospective
