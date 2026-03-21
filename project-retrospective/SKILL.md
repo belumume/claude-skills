@@ -10,14 +10,14 @@ Analyze a project's session history by dispatching parallel historian agents to 
 
 ## Modes
 
-Two modes, selected by argument:
+Two modes, differentiated by **output format** (not historian cost):
 
-| Mode | When to Use |
-|------|-------------|
-| **full** (default) | Phase transitions, major incidents, no prior retro exists, first retro for a project |
-| **since-last-retro** | Periodic check-ins (every 3-5 sessions), ongoing projects with an existing retro baseline |
+| Mode | Output | When to Use |
+|------|--------|-------------|
+| **full** | Standalone ANALYSIS (superset, safe to delete prior) | Phase transitions, major incidents, no prior retro exists, reset the chain |
+| **incremental** | Delta UPDATE (references prior retro, never delete prior) | Periodic check-ins (every 3-5 sessions), ongoing projects with an existing retro baseline |
 
-**Full** re-analyzes all exports and produces a standalone superset document. **Incremental** reads the prior retro as baseline and only dispatches historians for new exports — O(delta) instead of O(N).
+Both modes reuse prior historian work when a prior retro exists — only NEW exports get fresh historians. The difference is what the synthesizer produces: a standalone document vs. a delta document.
 
 ## Arguments
 
@@ -25,11 +25,14 @@ Parse `$ARGUMENTS` to determine scope and mode:
 
 | Argument | Behavior |
 |----------|----------|
-| *(none)* or `full` | **Full mode.** Analyze ALL exports in the project directory |
-| `since-last-retro` | **Incremental mode.** Find prior retro, analyze only new exports since then |
-| `last-N` | **Full mode** but scoped to the N most recent exports only |
+| *(none)* | **Context-aware default.** Check for prior retros first (Phase 1.5). If a prior retro exists, default to **incremental**. If no prior retro exists, default to **full**. |
+| `full` | **Explicit full mode.** User override — produce a standalone ANALYSIS. Still reuse prior historian work (only dispatch historians for new exports). |
+| `since-last-retro` | **Explicit incremental mode.** Produce a delta UPDATE against the prior retro. |
+| `last-N` | **Full mode** scoped to the N most recent exports only. Always dispatches fresh historians for all N exports — does not reuse prior retro content. Skip Phase 1.5 entirely. Use for focused recent-session analysis. |
 
 If the argument doesn't match any of the above, echo it back and ask what was meant.
+
+**User override is final.** If the user explicitly says `full`, produce a full ANALYSIS — don't argue or suggest incremental. The context-aware default only applies when no argument is given.
 
 ## Phase 1: Discover & Validate Exports
 
@@ -44,24 +47,25 @@ Sort by filename (date-prefixed = chronological). If `last-N` was provided, take
 
 **Some exports missing:** List what was found, proceed with available files, and note gaps in the final output.
 
-## Phase 1.5: Detect Prior Retro (incremental mode only)
+## Phase 1.5: Detect Prior Retro
 
-Skip this phase entirely in full mode.
-
-In incremental mode, find the most recent full retro document:
+In both modes, find the most recent full retro document:
 ```
 docs/retros/*-PROJECT-HISTORY-ANALYSIS.md
 ```
 
 **Fallback for pre-v2 projects:** If `docs/retros/` has no matches, also check `docs/*-PROJECT-HISTORY-ANALYSIS.md` (pre-v2 output path). If found there, move it to `docs/retros/` first, then proceed.
 
-**If no prior retro exists anywhere:** Report this and switch to full mode automatically. Incremental requires a baseline.
+**If no prior retro exists anywhere:**
+- **Incremental mode:** Report this and switch to full mode automatically. Incremental requires a baseline.
+- **Full mode:** Proceed normally — all exports need fresh historians.
 
 **If prior retro found:**
 1. Read it fully — it contains the synthesized analysis of previously-analyzed sessions.
 2. Extract the session range it covers (from the `**Sessions:** <range>` header line).
 3. Determine which exports are NEW (not covered by the prior retro's session range).
-4. If zero new exports exist since the prior retro, report "nothing new to analyze" and stop.
+4. If zero new exports exist since the prior retro: report "nothing new to analyze — prior retro is current" and stop. This applies to both modes — re-synthesizing the same data produces equivalent output.
+5. **Full mode:** The prior retro's content serves as pre-computed extraction for already-analyzed sessions (see Phase 2).
 
 **Chaining semantics:** Incremental always chains from the last *full* retro (ANALYSIS file), never from a prior *incremental update* (UPDATE file). This means multiple incremental updates can accumulate between full retros. Each delta is independently interpretable against the same baseline. To reset the chain, run a full retro.
 
@@ -69,8 +73,11 @@ docs/retros/*-PROJECT-HISTORY-ANALYSIS.md
 
 ## Phase 2: Spawn Historians (Parallel Background Agents)
 
-**Full mode:** Launch one background agent per export (all exports).
 **Incremental mode:** Launch one background agent per NEW export only.
+
+**Full mode with prior retro (Phase 1.5 found one):** Only dispatch historians for exports NOT covered by the prior retro. The prior retro's content serves as pre-computed extraction for already-analyzed sessions — pass it to the synthesizer in Phase 3 alongside the new historian reports. This gives full-mode superset output with incremental historian cost.
+
+**Full mode without prior retro:** Launch one background agent per export (all exports).
 
 Use the literal `Agent` tool (not TaskCreate, not TeamCreate) with these exact parameters:
 
@@ -131,9 +138,13 @@ write any files.
 
 ## Phase 3: Synthesize
 
-After ALL historians complete, combine reports into a single analysis. The orchestrator (main conversation) or a dedicated synthesizer agent produces the output.
+After ALL historians complete, combine reports into a single analysis.
+
+**Synthesizer delegation:** If fewer than ~15 historian reports, the orchestrator can synthesize inline. For 15+ reports, delegate to a dedicated opus synthesizer agent — the combined reports plus prior retro content may exceed comfortable inline processing. Pass all historian reports and (if applicable) the prior retro content in the synthesizer's prompt.
 
 **Full mode** uses the Full Synthesis Template. **Incremental mode** uses the Incremental Synthesis Template.
+
+**Full mode with prior retro input:** The synthesizer needs BOTH the new historian reports AND the prior retro content. The prior retro provides the deep extraction for already-analyzed sessions; the new historian reports cover the delta. The synthesizer must treat both as equal primary sources and produce a standalone superset ANALYSIS — not a delta, not a summary of the prior retro with new sections appended. Re-synthesize the full narrative from all available data.
 
 **Incremental mode input:** The synthesizer needs BOTH the new historian reports AND the prior retro content (read in Phase 1.5). If delegating synthesis to a subagent, include the prior retro text in its prompt — the subagent doesn't have Phase 1.5 context.
 
@@ -251,5 +262,7 @@ Commit the analysis and any memory updates.
 - **Haiku/sonnet for historians** — exports are 50-200KB. Cheaper models miss nuance in long documents.
 - **Summarizing instead of extracting** — "summarize the session" produces generic output. The 9-point extraction template IS the skill's value.
 - **Re-analyzing old sessions in incremental mode** — the whole point of incremental is O(delta). If you're spawning historians for sessions the prior retro already covers, you're doing it wrong.
+- **Fresh historians for already-extracted sessions** — if a prior retro exists, its content IS the extraction for those sessions. Dispatching new historians to re-read the same exports wastes opus agents and produces equivalent output. Only dispatch historians for sessions the prior retro doesn't cover.
+- **Hardcoding default mode without checking project state** — the default (no argument) should check whether prior retros exist before committing to full or incremental. A blind default ignores available information.
 - **Deleting prior retro after incremental** — incremental output is a delta, not a superset. The chain breaks.
 - **Running incremental without a baseline** — if no prior retro exists, switch to full mode. Don't produce a delta with nothing to delta against.
