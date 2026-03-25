@@ -1,0 +1,41 @@
+{
+  "safety": {
+    "block_patterns": [
+      "C:\\\\Users\\\\elzai",
+      "/c/Users/elzai",
+      "/home/elzai",
+      "avidlearner111",
+      "hf_[A-Za-z0-9]{20,}",
+      "sk-or-v1-[A-Za-z0-9]{20,}",
+      "sk-[A-Za-z0-9]{20,}",
+      "nvapi-[A-Za-z0-9]{20,}",
+      "KGAT_[A-Za-z0-9]{20,}",
+      "PROTON_PASS",
+      "\\.env\\.local"
+    ],
+    "warn_patterns": [
+      "quantelect",
+      "ubaid"
+    ]
+  },
+  "skills": {
+    "obsidian-study-vault-builder": {
+      "export_description": "Build mobile-compatible Obsidian study vaults from academic materials with checkpoint workflow and QA. Battle-tested on 800KB+ projects. Works across CS, medicine, business.",
+      "strip_patterns": {
+        "obsidian\\.com": "obsidian"
+      }
+    },
+    "document-quality-standards": {
+      "export_description": "Use when creating or editing documents (DOCX, PDF, XLSX, PPTX) that need professional output. Adds visual verification, typography hygiene, and formula patterns."
+    },
+    "docx-advanced-patterns": {
+      "export_description": "Advanced python-docx patterns for nested tables, complex cells, and content extraction beyond .text property. Techniques for forms, checklists, and complex layouts."
+    },
+    "docx-template-filling": {
+      "export_description": "Fill DOCX template forms preserving 100% original structure - logos, footers, styles, metadata. Zero-artifact insertion. Output indistinguishable from manual entry."
+    },
+    "rtl-document-translation": {
+      "export_description": "Translate DOCX to RTL languages (Arabic, Hebrew, Urdu) preserving exact formatting, tables, colors, layouts. Handles quote normalization and multi-pass matching."
+    }
+  }
+}
