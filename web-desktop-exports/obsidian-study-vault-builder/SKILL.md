@@ -175,6 +175,62 @@ git commit -m "Complete: Study vault (37 files, 828KB)"
 
 ---
 
+## CLI Integration
+
+Obsidian CLI (v1.12+) complements the Write tool for specific operations. **Requires Obsidian app running.**
+
+### When to Use CLI vs Write Tool
+
+| Operation | Tool | Why |
+|---|---|---|
+| Creating new files (bulk) | `Write` tool | Faster, no shell overhead, no escaping |
+| Setting/reading frontmatter | CLI `property:set`/`property:read` | Native YAML handling |
+| Appending to existing files | CLI `append`/`prepend` | Obsidian-aware, instant index update |
+| Post-build QA | CLI `search`, `unresolved`, `orphans` | Uses Obsidian's live index |
+| Vault state checks | CLI `files total`, `vault`, `sync:status` | Direct access to Obsidian metadata |
+
+### Post-Build Verification
+
+Run after vault generation to catch issues:
+
+```bash
+obsidian files folder=<course> total        # Verify file count matches expected
+obsidian tags counts                        # Verify tags are populated
+obsidian unresolved                         # Find broken [[wiki-links]]
+obsidian orphans                            # Find files with no incoming links
+obsidian deadends                           # Find files with no outgoing links
+obsidian search query="TODO"                # Catch unfinished placeholders
+```
+
+### Frontmatter Operations
+
+Use CLI instead of manual YAML editing for property manipulation:
+
+```bash
+obsidian property:set name=tags value="[exam-prep,chapter-1]" type=list path=<file>
+obsidian property:set name=status value=draft path=<file>
+obsidian property:read name=tags path=<file>
+```
+
+### Incremental Updates
+
+For adding content to existing vault files without full rewrites:
+
+```bash
+obsidian append path=<file> content="## New Section\n..."
+obsidian daily:append content="- [ ] Review chapter 3"
+```
+
+### Sync Awareness
+
+Check sync state before/after large operations:
+
+```bash
+obsidian sync:status    # Verify sync is not paused before starting vault build
+```
+
+---
+
 ## Additional Resources
 
 **See REFERENCE.md for:**
