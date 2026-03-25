@@ -540,6 +540,21 @@ Bad (sequential):
 - [ ] Examples are clear and complete
 - [ ] No gaps in explanations
 
+### CLI Verification Commands
+
+Run these after build to replace manual grep-based checks:
+
+| Manual Check | CLI Replacement |
+|---|---|
+| `grep -r "TODO" *.md` | `obsidian search query=TODO path=<course>` |
+| Manual link checking | `obsidian unresolved` |
+| Count files manually | `obsidian files folder=<course> total` |
+| Check frontmatter manually | `obsidian properties path=<file>` |
+| Find disconnected files | `obsidian orphans` + `obsidian deadends` |
+| Verify tags exist | `obsidian tags counts` |
+
+**Requires Obsidian app running.** Fall back to grep/manual checks if app is closed.
+
 ---
 
 ## Anti-Patterns (What NOT to Do)
@@ -665,6 +680,7 @@ FORMATTING STANDARDS:
 - Lint for common formatting errors
 - Link checker for internal references
 - Mermaid syntax validator
+- CLI enables automation of the 50+ item QA checklist (unresolved links, orphans, tag counts, file totals)
 
 ---
 

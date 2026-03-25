@@ -1,7 +1,7 @@
 ---
 name: obsidian-study-vault-builder
 description: Build comprehensive, mobile-compatible Obsidian study vaults from academic course materials with checkpoint-based workflow, error pattern recognition, and quality assurance. Battle-tested patterns from 828KB/37-file projects. Works across all subjects - CS, medicine, business, self-study.
-version: 2.1.0
+version: 2.2.0
 tags:
   - obsidian
   - education
@@ -180,6 +180,62 @@ For 100+ pages of materials, use Task tool with subagent_type=Explore.
 git commit -m "Initial vault structure"
 git commit -m "Complete Chapter 1 (checkpoint)"
 git commit -m "Complete: Study vault (37 files, 828KB)"
+```
+
+---
+
+## CLI Integration
+
+Obsidian CLI (v1.12+) complements the Write tool for specific operations. **Requires Obsidian app running.**
+
+### When to Use CLI vs Write Tool
+
+| Operation | Tool | Why |
+|---|---|---|
+| Creating new files (bulk) | `Write` tool | Faster, no shell overhead, no escaping |
+| Setting/reading frontmatter | CLI `property:set`/`property:read` | Native YAML handling |
+| Appending to existing files | CLI `append`/`prepend` | Obsidian-aware, instant index update |
+| Post-build QA | CLI `search`, `unresolved`, `orphans` | Uses Obsidian's live index |
+| Vault state checks | CLI `files total`, `vault`, `sync:status` | Direct access to Obsidian metadata |
+
+### Post-Build Verification
+
+Run after vault generation to catch issues:
+
+```bash
+obsidian.com files folder=<course> total        # Verify file count matches expected
+obsidian.com tags counts                        # Verify tags are populated
+obsidian.com unresolved                         # Find broken [[wiki-links]]
+obsidian.com orphans                            # Find files with no incoming links
+obsidian.com deadends                           # Find files with no outgoing links
+obsidian.com search query="TODO"                # Catch unfinished placeholders
+```
+
+### Frontmatter Operations
+
+Use CLI instead of manual YAML editing for property manipulation:
+
+```bash
+obsidian.com property:set name=tags value="[exam-prep,chapter-1]" type=list path=<file>
+obsidian.com property:set name=status value=draft path=<file>
+obsidian.com property:read name=tags path=<file>
+```
+
+### Incremental Updates
+
+For adding content to existing vault files without full rewrites:
+
+```bash
+obsidian.com append path=<file> content="## New Section\n..."
+obsidian.com daily:append content="- [ ] Review chapter 3"
+```
+
+### Sync Awareness
+
+Check sync state before/after large operations:
+
+```bash
+obsidian.com sync:status    # Verify sync is not paused before starting vault build
 ```
 
 ---
