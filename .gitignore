@@ -1,0 +1,38 @@
+# Whitelist approach: ignore everything, explicitly track approved content.
+# New third-party skills (symlinks) are automatically ignored.
+# New custom skills must be added here before they can be tracked on GitHub.
+
+*
+
+# Repo meta
+!.gitignore
+!.github/
+!.github/**
+!README.md
+!sync-config.json
+
+# Approved custom skills
+!obsidian-study-vault-builder/
+!obsidian-study-vault-builder/**
+!document-quality-standards/
+!document-quality-standards/**
+!docx-advanced-patterns/
+!docx-advanced-patterns/**
+!docx-template-filling/
+!docx-template-filling/**
+!rtl-document-translation/
+!rtl-document-translation/**
+!ralph-loop/
+!ralph-loop/**
+!rlm-orchestrator/
+!rlm-orchestrator/**
+!deep-brainstorming/
+!deep-brainstorming/**
+!project-retrospective/
+!project-retrospective/**
+!plugins/
+!plugins/**
+
+# Web desktop exports
+!web-desktop-exports/
+!web-desktop-exports/**
