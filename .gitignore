@@ -12,8 +12,6 @@
 !sync-config.json
 
 # Approved custom skills
-!obsidian-study-vault-builder/
-!obsidian-study-vault-builder/**
 !document-quality-standards/
 !document-quality-standards/**
 !docx-advanced-patterns/

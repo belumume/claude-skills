@@ -4,13 +4,6 @@ Personal collection of custom Claude skills and plugins.
 
 ## Skills
 
-### Knowledge Management & Education
-
-#### obsidian-study-vault-builder
-Build comprehensive, mobile-compatible Obsidian study vaults from academic course materials with checkpoint-based workflow, error pattern recognition, and quality assurance.
-
-[See obsidian-study-vault-builder/](obsidian-study-vault-builder/)
-
 ### Document Processing
 
 #### document-quality-standards
