@@ -104,7 +104,7 @@ Manual-vs-CLI mapping (prefer CLI when index-aware semantics matter):
 
 Multi-vault: `obsidian.com --vault=<name> <subcommand>` targets a specific vault. Useful when more than one vault is open or you need to script across them.
 
-Universal escape hatch: `obsidian.com command id=<command-id>` executes any registered Obsidian command (including plugin commands). `obsidian.com commands` lists all available command IDs. CLI also has subcommands for `bases`, `publish:*`, `sync:*`, `quickadd:*`, `templater:*`, `snippets`, `themes`, `hotkey`, `hotkeys` — see `obsidian.com help` for the full ~100-command catalog.
+Universal escape hatch: `obsidian.com command id=<command-id>` executes any registered Obsidian command (including plugin commands). `obsidian.com commands` lists all available command IDs. CLI also has subcommands for `bases`, `publish:*`, `sync:*`, `quickadd:*`, `templater:*`, `snippets`, `themes`, `hotkey`, `hotkeys`; see `obsidian.com help` for the full ~100-command catalog.
 
 ### Pattern 3: Local REST API direct (curl)
 
@@ -330,7 +330,7 @@ Official guidance recommends keeping each CLAUDE.md under 200 lines. For path-sc
 Two patterns are in active community use; neither has clear consensus as the "right" one:
 
 - **Per-project**: `<project>/assets/` for diagrams/images, `<project>/code/` for samples. Relative paths (`![[../assets/x.png]]`) keep the project portable. Best for project-as-unit thinking and easy git submodule.
-- **Flat attachment folder**: Obsidian's default — single `attachments/` (or configured equivalent) at vault root, all paste-images go there. Best for cross-cutting reuse and simpler image-management.
+- **Flat attachment folder**: Obsidian's default; single `attachments/` (or configured equivalent) at vault root, all paste-images go there. Best for cross-cutting reuse and simpler image-management.
 
 Pick based on portability needs (per-project wins) vs cross-vault reuse (flat wins). Avoid absolute paths in either pattern.
 
