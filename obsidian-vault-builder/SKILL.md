@@ -1,6 +1,6 @@
 ---
 name: obsidian-vault-builder
-description: Use when adding/editing/querying content in an existing Obsidian vault, configuring plugins, integrating Claude Code with Obsidian via Local REST API or CLI, automating ongoing capture/organization/retrieval, or designing a personal knowledge management workflow. Action-shape: ongoing-capture and editing of an existing vault. For BUILDING academic study vaults from scratch (course prep, exam-ready, mock-exam content), use obsidian-study-vault-builder instead.
+description: Use when adding/editing/querying content in an existing Obsidian vault, configuring plugins, integrating Claude Code with Obsidian via Local REST API or CLI, automating ongoing capture/organization/retrieval, designing a personal knowledge management workflow, OR building academic study vaults (course prep, exam-ready, mock-exam content — the durable academic-study patterns from a deprecated companion skill have been folded into this one).
 version: 0.1.0
 tags:
   - obsidian
@@ -15,7 +15,7 @@ tags:
 
 Patterns for operating an Obsidian vault from Claude Code: capture pipelines, plugin selection, REST API integration, file-portability discipline, methodology choice. Multi-vault aware.
 
-**For academic study vault construction** (course prep, lecture notes, mock exams, exam-ready content), use the sibling skill `obsidian-study-vault-builder` instead. This skill is for ongoing PKM operation; the sibling is for greenfield study-vault builds.
+**For academic study vault construction** (course prep, lecture notes, mock exams, exam-ready content): the durable patterns from the deprecated `obsidian-study-vault-builder` skill have been folded into this one (see "Common Obsidian rendering pitfalls" below + the QA / mobile / universal-features sections). The companion skill itself was removed via PR #6 and re-validated 2026-05-15 (over-triggered on exam-prep prompts; structurally misaligned with the interactive-practice approach in `~/.claude/rules/exam-prep-protocol.md`).
 
 ## When to use
 
@@ -346,4 +346,4 @@ Tag by concept rather than by location (`#async-patterns` not `#nodejs-folder`).
 
 v0.1.0. Patterns are the result of a research arc with multi-wave agent verification, end-to-end mobile sync test, and Smart Connections empirical multilingual evaluation. NOT yet validated by an external full PKM build. Bump to v1.0 only after that lands.
 
-For the academically-focused sibling, see `obsidian-study-vault-builder` (battle-tested across 37-file/828KB academic study vaults).
+The previously-separate `obsidian-study-vault-builder` skill (battle-tested across 37-file/828KB academic study vaults) was deprecated 2026-05-15 per PR #6 + post-compact re-validation. Its durable patterns are folded into this skill above.
