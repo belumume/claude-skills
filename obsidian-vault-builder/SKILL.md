@@ -38,7 +38,7 @@ These are in Obsidian's official community plugin store. Install only what's nee
 1. **Local REST API** (coddingtonbear): base layer for Claude Code <-> vault interaction. HTTPS bearer token; store the key in a password manager. Loopback-only on `127.0.0.1:27124`.
 2. **Obsidian Git**: auto-commit on a schedule, push to a private remote. Note: Obsidian Sync's 30-day version history is NOT a backup; this is.
 3. **Templater**: automation foundation for templates and user scripts.
-4. **Periodic Notes**: daily/weekly/monthly scaffolding.
+4. **Periodic Notes**: daily/weekly/monthly scaffolding. Note: last commit ~21 months ago as of 2026-05; still functional and in store but watch for a maintained successor.
 5. **Style Settings**: theme customization without writing CSS.
 6. **QuickAdd**: macros and capture pipelines.
 7. **Smart Connections**: passive sidebar discovery via local embeddings (free).
@@ -50,27 +50,29 @@ Plugin-bloat discipline: ~10 active plugins as a soft cap. Anything beyond requi
 
 Several Claude/Codex-integrating plugins exist with varying vetting status. Always verify current store-listing status before recommending:
 
-- **ObsidiBot** (formerly Cortex; ScottKirvan/ObsidiBot): Claude Code chat panel inside Obsidian. Beta as of skill authoring; verify store status before install.
-- **Claudian** (YishenTu/claudian, plugin id `realclaudian`): GUI alternative to terminal Claude Code. Listed in registry with a "not manually reviewed by Obsidian staff" warning shown at install time.
-- **Agent Client** (RAIT-09): multi-agent flexibility (Claude/Codex/Gemini). Optional.
+- **Agent Client** (`RAIT-09/obsidian-agent-client`, registry id `agent-client`): multi-agent flexibility (Claude/Codex/Gemini via standardized ACP). Verified in official store as of 2026-05-15. Store-installable.
+- **Claudian** (`YishenTu/claudian`, plugin id `realclaudian`): GUI alternative to terminal Claude Code. NOT in official store as of 2026-05-15; BRAT install only. Verify status before recommending.
+- **ObsidiBot** (formerly Cortex; `ScottKirvan/ObsidiBot`): Claude Code chat panel inside Obsidian. NOT in official store as of 2026-05-15; BRAT install only. Verify status before recommending.
+- Exclude `m-rgba/obsidian-ai-agent`: archived 2026-04.
 
 Apply the "does this add capability beyond Claude Code reading the vault directly?" test per-plugin. For terminal Claude Code users, the test usually returns "no" for these. Default-skip; install only on explicit user request after surfacing the trust escalation (file-drop or BRAT installs run with full vault read/write/bash access).
 
 ## Smart Connections language coverage
 
-Smart Connections ships with an English-only default embedding model (`TaylorAI/bge-micro-v2` distilled from `BAAI/bge-small-en-v1.5`). For multilingual vaults (Arabic, Hebrew, CJK, etc.), the default model produces near-noise similarity scores on out-of-distribution content.
+Smart Connections ships with an English-only default embedding model. For multilingual vaults (Arabic, Hebrew, CJK, etc.), the default model produces near-noise similarity scores on out-of-distribution content.
 
-CAVEAT (verified 2026-05): the free tier of Smart Connections does NOT explicitly document arbitrary HuggingFace model swaps. "Advanced filters and models" is listed as a Connections Pro feature. Direct edits to `.smart-env/smart_env.json` may or may not take effect depending on plugin version. Verify via plugin settings UI or by checking `.smart-env/event_logs/event_logs.ajson` after reopen that the new model actually loaded.
+**Documented swap path**: use the Smart Environment settings UI in Obsidian to switch the embedding model. `intfloat/multilingual-e5-small` is on the official model list. Trigger re-embed from the same UI.
 
-If you're on Pro or willing to attempt the direct-edit workaround:
-1. Close Obsidian completely (so the plugin isn't holding state)
-2. Edit `<vault>/.smart-env/smart_env.json` and change `smart_sources.embed_model.transformers.model_key` to a multilingual model. Candidates: `BAAI/bge-m3` (100+ languages including Arabic, 1024 dims, 8192 max_tokens, verified on HuggingFace 2026-05) or `intfloat/multilingual-e5-base` (~100 languages, 768 dims)
+**Direct-JSON swap path** (unsupported but works in practice for arbitrary HuggingFace transformers models, e.g. `BAAI/bge-m3`):
+
+1. Close Obsidian completely (plugin must not be holding state)
+2. Edit `<vault>/.smart-env/smart_env.json` and change `smart_sources.embed_model.transformers.model_key`
 3. Add a corresponding entry to `<vault>/.smart-env/embedding_models/embedding_models.ajson` with the new `model_key`, `dims`, `max_tokens`
 4. Update `embedding_models.default_model_key` in `smart_env.json` to reference the new entry
 5. Delete `<vault>/.smart-env/multi/*.ajson` (the per-file embeddings) to force re-embed
-6. Reopen Obsidian. If the swap took, Smart Connections will download the new model on first load (~500 MB for bge-m3). If the swap was ignored, it falls back to default.
+6. Reopen Obsidian. Smart Connections will download the new model on first load (~500 MB for bge-m3).
 
-Verify multilingual coverage empirically before relying on it for production search.
+The direct-JSON path is not officially documented; the plugin may reset settings on update. For long-term setups, prefer the UI path with a documented model. Verify multilingual coverage empirically before relying on it for production search.
 
 ## Claude Code <-> vault interaction patterns
 
@@ -99,6 +101,10 @@ Manual-vs-CLI mapping (prefer CLI when index-aware semantics matter):
 | Tag inventory via grep | `obsidian.com tags counts` |
 | File frontmatter edit | `obsidian.com property:set name=<key> value=<val> path=<file>` |
 | Open vault file in OS file manager | `obsidian.com open path=<file>` (in-app) |
+
+Multi-vault: `obsidian.com --vault=<name> <subcommand>` targets a specific vault. Useful when more than one vault is open or you need to script across them.
+
+Universal escape hatch: `obsidian.com command id=<command-id>` executes any registered Obsidian command (including plugin commands). `obsidian.com commands` lists all available command IDs. CLI also has subcommands for `bases`, `publish:*`, `sync:*`, `quickadd:*`, `templater:*`, `snippets`, `themes`, `hotkey`, `hotkeys` — see `obsidian.com help` for the full ~100-command catalog.
 
 ### Pattern 3: Local REST API direct (curl)
 
@@ -134,32 +140,33 @@ Workflow: create externally, save as PNG/SVG to `<project>/assets/`, embed via `
 
 Mermaid is the default for universal compatibility. When it hits a limit, reach for one of these:
 
-| Tool | Best for | Platform | Complexity |
-|---|---|---|---|
-| Mermaid | Standard flowcharts, sequences, class, state, ER, Gantt, mindmap | Universal (desktop + mobile) | Low-Medium |
-| Excalidraw | Hand-drawn sketches, whiteboard thinking, annotations | Desktop full; mobile view+basic edit | Low |
-| Draw.io | Professional system architecture, complex technical | Desktop | High |
-| D2 | Modern software architecture (cleaner syntax than PlantUML) | Desktop (requires D2 install) | Medium |
-| PlantUML | Advanced UML beyond Mermaid (sequence, use case, activity, component) | Desktop | High |
-| Pikchr | Lightweight technical diagrams (PIC-syntax, client-side render) | Plugin | Medium |
-| WaveDrom | Digital timing diagrams for hardware/EE documentation | Desktop/Plugin | Medium |
-| Kroki | Unified API serving 25+ formats (BlockDiag, BPMN, C4, D2, Mermaid, PlantUML, Vega, etc.) | Self-host or public | Medium |
-| Python+Matplotlib | Algorithm traces, statistical plots, scientific viz (export PNG) | External -> embed | Variable |
-| TikZ (LaTeX) | Publication-quality technical diagrams | External -> embed | High |
+| Tool | Best for | Plugin status (verified 2026-05-15) |
+|---|---|---|
+| Mermaid (v11+) | Flowcharts, sequence, class, state, ER, Gantt, mindmap, block, packet, architecture, sankey | Bundled with Obsidian; active |
+| Excalidraw | Hand-drawn sketches, whiteboard thinking, annotations | `zsviczian/obsidian-excalidraw-plugin`, active (pushed 2026-05) |
+| Draw.io / Diagrams | Professional system architecture, complex technical | Two variants: `zapthedingbat/drawio-obsidian` (offline, active 2026-02), `jensmtg/obsidian-diagrams-net` (online, last 2024-08, maintainer seeking successor). Prefer offline. |
+| PlantUML | Advanced UML (sequence, use case, activity, component) beyond Mermaid | `joethei/obsidian-plantuml`, active (pushed 2026-04) |
+| D2 | Modern software architecture (cleaner syntax than PlantUML) | `terrastruct/d2-obsidian` STALE (last release 2023-12, plugin lags D2 by major versions). D2 language itself active. Verify before recommending. |
+| Pikchr | Lightweight technical diagrams (PIC-syntax, client-side render) | `notlibrary/obsidian-adamantine-pick` (registry id `adamantine-pick`), active (pushed 2026-04) |
+| WaveDrom | Digital timing diagrams for hardware/EE documentation | `kingsquirrel152/obsidian-wavedrom` STALE (~16 months no commits). Verify before use. |
+| Kroki | Unified API serving 25+ formats (BlockDiag, BPMN, C4, D2, Mermaid, PlantUML, Vega, etc.) | Self-hostable or public service; verify your specific format support before adopting |
+| Python+Matplotlib | Algorithm traces, statistical plots, scientific viz | External -> embed PNG/SVG |
+| TikZ (LaTeX) | Publication-quality technical diagrams | External -> embed PNG/SVG |
 
 ### Decision tree
 
 - Simple flowchart or sequence -> Mermaid
-- Complex UML -> PlantUML or D2
+- Block / architecture / packet / sankey diagram -> Mermaid v11+ (added natively)
+- Complex UML -> PlantUML (D2 plugin is stale; use the D2 language externally and embed PNG/SVG)
 - Hand-drawn aesthetic -> Excalidraw (desktop) or external image
-- Professional architecture -> Draw.io or D2
-- Hardware timing diagram -> WaveDrom
+- Professional architecture -> Draw.io (offline variant) or D2 external
+- Hardware timing diagram -> WaveDrom (verify plugin freshness or use the wavedrom CLI externally)
 - Data visualization -> Vega/Charts plugin or Python -> PNG
 - Quick sketch -> Excalidraw
 - Algorithm trace -> Python (Matplotlib) -> PNG
-- Mind map -> Canvas Mindmap or Mermaid mindmap
+- Mind map -> Mermaid mindmap (now stable post v11.4) or Canvas Mindmap
 - Math notation -> LaTeX (always)
-- Any of the above but you want one syntax for all -> Kroki
+- Want one syntax for many formats -> Kroki (verify format support)
 
 ### Tool selection factors
 
@@ -227,11 +234,10 @@ When generating markdown content for an Obsidian vault, these are the recurring 
 
 ### Mermaid diagrams
 
-- `≤` and `≥` break Mermaid parsing. Use ASCII `<=` / `>=`.
 - `[1. Text]` triggers "Unsupported markdown: list" error in node labels. Use `["Step 1:<br/>Text"]` (quoted with HTML break).
 - `[text](value)` inside node labels is interpreted as link syntax. Use `{text}(value)` (curly braces).
-- `&` in mindmap nodes (only) renders as `&amp;` per Mermaid issue #6308 (closed via PRs #7436 + #6315; affected versions ≤11.4.0). Verify your Obsidian's bundled Mermaid version via DevTools console: `window.mermaid?.version`. If older than the fix, workaround is Unicode fullwidth ampersand `＆` (U+FF06). Flowcharts/graphs render `&` correctly regardless.
-- Diagnose via `grep -r "≤\|≥\|∞\|∈\|≠" *.md` then ASCII-substitute.
+- Special-character parsing edge cases persist in some Mermaid v11.x diagram types (sankey, etc.). For mindmap `&` (Mermaid issue #6308) and mindmap `<`/`>` (issue #6396), both fixed in v11.4+ and current Obsidian (1.12.x) bundles a fixed version. Older Obsidian releases may still need ASCII `<=`/`>=` substitution and Unicode fullwidth `＆` workaround.
+- Diagnose via `grep -r "≤\|≥\|∞\|∈\|≠" *.md` if targeting older Obsidian.
 
 ### LaTeX in markdown tables
 
@@ -288,7 +294,7 @@ The `-` after `[!example]` makes it collapsible (default collapsed). Blank line 
 
 For long-lived shared content, prefer the universal set; use plugin-dependent features for personal dashboards only.
 
-Mobile vault sizing rule of thumb: keep under 3-4k files for acceptable startup latency on phones. 10-15 active plugins maximum (or do startup-time measurements before each install).
+Mobile vault sizing: with Obsidian 1.10+ progressive loading, vaults of 10k+ notes start under 1 second on phones (Kepano demo'd 17k+ notes). The older 3-4k file limit was a pre-1.10 artifact. Plugin count is the higher driver of mobile startup latency than file count today; soft cap of ~10-15 active plugins remains a good discipline.
 
 ### Document platform dependencies inline
 
@@ -307,19 +313,26 @@ When generating notes that depend on desktop-only features, prepend a Platform N
 - **Broken tables (missing blank line)**: pipes/dashes render as literal text. Fix: ensure ONE blank line before any markdown table.
 - **HTML details/summary tags don't render in Obsidian**: don't use `<details>`/`<summary>`; use the `> [!example]-` callout form documented above.
 
-## CLAUDE.md hierarchy within a vault
+## CLAUDE.md layering within a vault
 
-For vaults spanning multiple knowledge domains, layer CLAUDE.md files at appropriate depths:
+Per the official Claude Code memory model (https://code.claude.com/docs/en/memory), CLAUDE.md files are loaded by walking up the directory tree from cwd; all discovered files concatenate into context (they don't override each other). Subdirectory CLAUDE.md files lazy-load when Claude reads files there.
 
-- **Vault-root CLAUDE.md**: vault conventions (folder structure principles, universal-features discipline, plugin philosophy, naming rules)
-- **Category folder CLAUDE.md** (e.g., `Projects/CLAUDE.md`, `Reference/CLAUDE.md`): domain-specific patterns
-- **Project folder CLAUDE.md**: project-specific facts (deadlines, collaborators, source materials)
+Practical application for vaults spanning multiple knowledge domains: layer CLAUDE.md files at appropriate depths.
 
-Prevents monolithic memory files; provides the right amount of context at each depth without context-pollution. New projects inherit from parent layers and only add specifics.
+- Vault-root CLAUDE.md: vault conventions (folder structure principles, universal-features discipline, plugin philosophy, naming rules)
+- Category folder CLAUDE.md (e.g., `Projects/CLAUDE.md`, `Reference/CLAUDE.md`): domain-specific patterns
+- Project folder CLAUDE.md: project-specific facts (deadlines, collaborators, source materials)
+
+Official guidance recommends keeping each CLAUDE.md under 200 lines. For path-scoped rules, `.claude/rules/*.md` with `paths` frontmatter is an alternative to nested CLAUDE.md.
 
 ## Asset organization
 
-Per-project: keep diagrams/images in `<project>/assets/`, code samples in `<project>/code/`. Use relative paths (`![[../assets/x.png]]` from notes) so the vault stays portable across re-orgs. Avoid absolute paths.
+Two patterns are in active community use; neither has clear consensus as the "right" one:
+
+- **Per-project**: `<project>/assets/` for diagrams/images, `<project>/code/` for samples. Relative paths (`![[../assets/x.png]]`) keep the project portable. Best for project-as-unit thinking and easy git submodule.
+- **Flat attachment folder**: Obsidian's default — single `attachments/` (or configured equivalent) at vault root, all paste-images go there. Best for cross-cutting reuse and simpler image-management.
+
+Pick based on portability needs (per-project wins) vs cross-vault reuse (flat wins). Avoid absolute paths in either pattern.
 
 For vaults that grow, the standard PKM structure scales:
 
