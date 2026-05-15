@@ -275,7 +275,7 @@ The `-` after `[!example]` makes it collapsible (default collapsed). Blank line 
 
 ### Universal-features discipline (mobile + future-proofing)
 
-| Universal (works everywhere) | Desktop-enhanced (mobile-limited) |
+| Universal (works everywhere) | Desktop-only or mobile-limited |
 |---|---|
 | Mermaid diagrams | Excalidraw (view + basic edit on mobile) |
 | LaTeX math (`$inline$`, `$$block$$`) | Canvas (functional but small-screen UX) |
@@ -295,7 +295,7 @@ When generating notes that depend on desktop-only features, prepend a Platform N
 > [!info] Platform Notes
 > **Desktop**: Full Excalidraw editing, Dataview queries, Canvas multi-pane.
 > **Mobile**: Static diagram exports, markdown tables, core callouts.
-> **Plugins**: Excalidraw, Dataview (optional but enhanced experience).
+> **Plugins**: Excalidraw, Dataview (optional; richer experience).
 ```
 
 ### Other rendering pitfalls
