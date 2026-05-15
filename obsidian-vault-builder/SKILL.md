@@ -38,10 +38,10 @@ These are in Obsidian's official community plugin store. Install only what's nee
 1. **Local REST API** (coddingtonbear): base layer for Claude Code <-> vault interaction. HTTPS bearer token; store the key in a password manager. Loopback-only on `127.0.0.1:27124`.
 2. **Obsidian Git**: auto-commit on a schedule, push to a private remote. Note: Obsidian Sync's 30-day version history is NOT a backup; this is.
 3. **Templater**: automation foundation for templates and user scripts.
-4. **Daily Notes** (core, no install) + **Calendar** plugin: maintained baseline for daily scaffolding. For weekly/monthly/quarterly/yearly scopes, **Periodic Notes** (`liamcain/obsidian-periodic-notes`) is the only widely-used option; ~21 months stale but still functional. No clean successor exists; community is asking the Obsidian team to absorb it as core. Use Templater for custom periodic-note generation if you outgrow Periodic Notes.
+4. **Daily Notes** (core, no install): maintained baseline for daily scaffolding. The companion **Calendar** plugin (`liamcain/obsidian-calendar-plugin`) is ~23 months stale (same author-abandonment pattern as Periodic Notes); still functional but no fixes incoming. For weekly/monthly/quarterly/yearly scopes, **Periodic Notes** (`liamcain/obsidian-periodic-notes`) is the only widely-used option; ~21 months stale but still functional. Bases-based date views (querying frontmatter `date` properties) can replace Calendar's sidebar UI for many users. `luiisca/obsidian-periodic-notes-calendar` is a smaller, actively-maintained alternative combining both. Use Templater for custom periodic-note generation if you outgrow Periodic Notes.
 5. **Style Settings**: theme customization without writing CSS.
 6. **QuickAdd**: macros and capture pipelines.
-7. **Smart Connections**: passive sidebar discovery via local embeddings (free).
+7. **Smart Connections** (`brianpetro/obsidian-smart-connections`): passive sidebar discovery via local embeddings (free). Note: 475+ open issues and a paywalled v4 have driven users to forks; consider `logancyang/obsidian-copilot` as an alternative or co-primary AI-layer plugin (6.9k+ stars, broader model support including Claude/Gemini/local).
 8. **Bases** (CORE built-in, no install required): replaces ~70% of Dataview use cases.
 
 Plugin-bloat discipline: ~10 active plugins as a soft cap. Anything beyond requires a startup-time measurement before/after to confirm acceptable launch latency.
