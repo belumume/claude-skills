@@ -89,15 +89,15 @@ Upload ZIPs from `web-desktop-exports/` via Settings, Capabilities.
 
 ```
 claude-skills/
-├── skill-name/                    # Skills
-│   └── SKILL.md
-├── plugins/                       # Plugins
-│   └── plugin-name/
-│       ├── .claude-plugin/plugin.json
-│       ├── hooks/
-│       ├── scripts/
-│       └── skills/
-└── web-desktop-exports/           # Web/desktop ZIPs
+  skill-name/                    # Skills
+    SKILL.md
+  plugins/                       # Plugins
+    plugin-name/
+      .claude-plugin/plugin.json
+      hooks/
+      scripts/
+      skills/
+  web-desktop-exports/           # Web/desktop ZIPs
 ```
 
 ## License
