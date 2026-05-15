@@ -36,7 +36,7 @@ Research-hardened brainstorming for high-stakes architecture decisions. 8-phase 
 ### Project Analysis
 
 #### project-retrospective
-Multi-agent retrospective for Claude Code projects. Dispatches parallel opus historians to extract structured data from session exports, then synthesizes findings into a comprehensive analysis with decision logs, mistake patterns, and user teaching moments. Supports `last-N` argument for scoped analysis. Requires session exports via `/export`.
+Multi-agent retrospective for Claude Code projects. Dispatches parallel opus historians to extract structured data from session exports, then synthesizes findings into a full analysis with decision logs, mistake patterns, and user teaching moments. Supports `last-N` argument for scoped analysis. Requires session exports via `/export`.
 
 [See project-retrospective/](project-retrospective/)
 
@@ -83,7 +83,7 @@ claude plugin install plugin-name@belumume/claude-skills
 ```
 
 ### Web/Desktop
-Upload ZIPs from `web-desktop-exports/` via Settings → Capabilities.
+Upload ZIPs from `web-desktop-exports/` via Settings, Capabilities.
 
 ## Structure
 
