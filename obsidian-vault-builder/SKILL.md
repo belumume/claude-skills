@@ -61,18 +61,11 @@ Apply the "does this add capability beyond Claude Code reading the vault directl
 
 Smart Connections ships with an English-only default embedding model. For multilingual vaults (Arabic, Hebrew, CJK, etc.), the default model produces near-noise similarity scores on out-of-distribution content.
 
-**Documented swap path**: use the Smart Environment settings UI in Obsidian to switch the embedding model. `intfloat/multilingual-e5-small` is on the official model list. Trigger re-embed from the same UI.
+**Recommended path**: use the Smart Environment settings UI in Obsidian. The dropdown lists 3 transformers-compatible options: `TaylorAI/bge-micro-v2` (default, English-only), `intfloat/multilingual-e5-small` (multilingual), `Snowflake/snowflake-arctic-embed-xs` (English, fast). For Arabic / Hebrew / CJK content, pick `intfloat/multilingual-e5-small`. Click Test model to download and verify, then trigger re-embed.
 
-**Direct-JSON swap path** (unsupported but works in practice for arbitrary HuggingFace transformers models, e.g. `BAAI/bge-m3`):
+**Direct-JSON swap path** (unsupported, works only for HuggingFace models that publish an ONNX-quantized variant at `huggingface.co/<model>/resolve/main/onnx/model_quantized.onnx`). The plugin loads via transformers.js which requires that exact path. Tested 2026-05-15: `BAAI/bge-m3` has NO ONNX-quantized variant; the plugin shows "Could not locate file" error. Do not assume an arbitrary model will work via JSON edit. Verify the ONNX path exists before scripting the swap.
 
-1. Close Obsidian completely (plugin must not be holding state)
-2. Edit `<vault>/.smart-env/smart_env.json` and change `smart_sources.embed_model.transformers.model_key`
-3. Add a corresponding entry to `<vault>/.smart-env/embedding_models/embedding_models.ajson` with the new `model_key`, `dims`, `max_tokens`
-4. Update `embedding_models.default_model_key` in `smart_env.json` to reference the new entry
-5. Delete `<vault>/.smart-env/multi/*.ajson` (the per-file embeddings) to force re-embed
-6. Reopen Obsidian. Smart Connections will download the new model on first load (~500 MB for bge-m3).
-
-The direct-JSON path is not officially documented; the plugin may reset settings on update. For long-term setups, prefer the UI path with a documented model. Verify multilingual coverage empirically before relying on it for production search.
+For long-term setups, prefer the UI dropdown with a documented model. Verify multilingual coverage empirically before relying on it for production search.
 
 ## Claude Code <-> vault interaction patterns
 
