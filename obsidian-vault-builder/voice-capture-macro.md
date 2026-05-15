@@ -81,15 +81,17 @@ module.exports = transcribeVoice;
    1. **Add, User Script** then select `pickVoiceFile` from the file picker.
    2. **Add, User Script** then select `transcribeVoice`.
    3. **Add, Capture** with these settings:
-      - Capture To: `Daily Notes/{{date:YYYY-MM-DD}}.md`
-      - Create file if missing: ✅
-      - Format:
+      - **File path / format:** match your daily-notes setup (check Obsidian Settings, Daily notes, "New file location"). For vault-root daily notes use `{{DATE:YYYY-MM-DD}}.md`. For a subfolder use `<your-folder>/{{DATE:YYYY-MM-DD}}.md`. Variable names ARE case-sensitive: uppercase `{{DATE}}` and `{{VALUE}}` are canonical (verified 2026-05-15 against `chhoumann/quickadd:src/formatters/fileNameDisplayFormatter.test.ts`).
+      - **Create file if it doesn't exist:** ON
+      - **Position, Write position:** Bottom of file (so memos append, not push down existing content)
+      - **Capture format:** ON
+      - **Format textarea:**
         ```
-        ## Voice memo {{time:HH:mm}}
-
-        {{value}}
-
-        _Source: {{templater:tp.user.lastVoiceFile}}_
+        
+        ## Voice memo {{DATE:HH:mm}}
+        
+        {{VALUE}}
+        
         ```
 4. Bind to ribbon icon or hotkey (e.g., `Ctrl+Alt+V`)
 
