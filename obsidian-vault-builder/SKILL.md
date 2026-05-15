@@ -86,6 +86,17 @@ obsidian.com tags counts         # tag inventory
 obsidian.com property:set name=<key> value=<val> path=<file>
 ```
 
+Manual-vs-CLI mapping (prefer CLI when index-aware semantics matter):
+
+| Manual | CLI |
+|---|---|
+| `grep -r "^- \[ \]" *.md` (unfinished tasks) | `obsidian.com tasks daily` |
+| `find . -name '*.md' \| wc -l` (file count) | `obsidian.com files folder=<x> total` |
+| Manually scanning for broken links | `obsidian.com unresolved` |
+| Tag inventory via grep | `obsidian.com tags counts` |
+| File frontmatter edit | `obsidian.com property:set name=<key> value=<val> path=<file>` |
+| Open vault file in OS file manager | `obsidian.com open path=<file>` (in-app) |
+
 ### Pattern 3: Local REST API direct (curl)
 
 Skip community MCP wrappers; most are stale or archived. Curl directly:
@@ -104,6 +115,60 @@ For new dashboards prefer Bases over Dataview (lighter, core, mobile-friendly):
 ```yaml
 where status = "active" AND priority = "high" AND due >= 2026-05-01
 ```
+
+### Pattern 5: external tool to embed (PNG/SVG)
+
+When a visualization exceeds Mermaid's expressiveness (algorithm traces, statistical plots, network diagrams, publication-quality figures), generate externally and embed:
+
+- Python: Matplotlib, NetworkX, Seaborn, drawsvg, CairoSVG
+- Graphviz/DOT for graph hierarchies
+- TikZ (LaTeX) for publication-quality technical diagrams
+- D3.js / Plotly for data-driven (export static for vault)
+
+Workflow: create externally, save as PNG/SVG to `<project>/assets/`, embed via `![[../assets/asset.png]]`. Use relative paths so the vault stays portable across re-orgs.
+
+## Diagram tool selection (beyond Mermaid)
+
+Mermaid is the default for universal compatibility. When it hits a limit, reach for one of these:
+
+| Tool | Best for | Platform | Complexity |
+|---|---|---|---|
+| Mermaid | Standard flowcharts, sequences, class, state, ER, Gantt, mindmap | Universal (desktop + mobile) | Low-Medium |
+| Excalidraw | Hand-drawn sketches, whiteboard thinking, annotations | Desktop full; mobile view+basic edit | Low |
+| Draw.io | Professional system architecture, complex technical | Desktop | High |
+| D2 | Modern software architecture (cleaner syntax than PlantUML) | Desktop (requires D2 install) | Medium |
+| PlantUML | Advanced UML beyond Mermaid (sequence, use case, activity, component) | Desktop | High |
+| Pikchr | Lightweight technical diagrams (PIC-syntax, client-side render) | Plugin | Medium |
+| WaveDrom | Digital timing diagrams for hardware/EE documentation | Desktop/Plugin | Medium |
+| Kroki | Unified API serving 25+ formats (BlockDiag, BPMN, C4, D2, Mermaid, PlantUML, Vega, etc.) | Self-host or public | Medium |
+| Python+Matplotlib | Algorithm traces, statistical plots, scientific viz (export PNG) | External -> embed | Variable |
+| TikZ (LaTeX) | Publication-quality technical diagrams | External -> embed | High |
+
+### Decision tree
+
+- Simple flowchart or sequence -> Mermaid
+- Complex UML -> PlantUML or D2
+- Hand-drawn aesthetic -> Excalidraw (desktop) or external image
+- Professional architecture -> Draw.io or D2
+- Hardware timing diagram -> WaveDrom
+- Data visualization -> Vega/Charts plugin or Python -> PNG
+- Quick sketch -> Excalidraw
+- Algorithm trace -> Python (Matplotlib) -> PNG
+- Mind map -> Canvas Mindmap or Mermaid mindmap
+- Math notation -> LaTeX (always)
+- Any of the above but you want one syntax for all -> Kroki
+
+### Tool selection factors
+
+When picking among options, weigh:
+
+- **Concept complexity**: simple -> Mermaid; complex -> external tool
+- **Precision needed**: rough -> Excalidraw; exact -> D2 or PlantUML
+- **Platform priority**: mobile-important -> universal formats only; desktop-only -> full toolset
+- **Editability**: frequent updates -> text-based (Mermaid, D2); one-time -> image acceptable
+- **Time available**: quick -> Mermaid or Excalidraw; detailed -> external generation
+- **Dynamic vs static**: data-driven -> programmatic (Vega, Python); static -> diagram tool
+- **Version control**: text-based formats track in git cleanly; binary needs Git LFS for size
 
 ## File-format philosophy
 
@@ -210,14 +275,63 @@ The `-` after `[!example]` makes it collapsible (default collapsed). Blank line 
 
 ### Universal-features discipline (mobile + future-proofing)
 
-For maximum portability across Obsidian versions and devices, prefer:
+| Universal (works everywhere) | Desktop-enhanced (mobile-limited) |
+|---|---|
+| Mermaid diagrams | Excalidraw (view + basic edit on mobile) |
+| LaTeX math (`$inline$`, `$$block$$`) | Canvas (functional but small-screen UX) |
+| Standard markdown (tables, lists, code blocks) | Dataview (mobile requires plugin) |
+| Embedded images | Complex PlantUML |
+| Wiki-links and core callouts | Advanced Canvas features |
 
-- Mermaid diagrams (renders without plugins)
-- LaTeX math (`$inline$`, `$$block$$`, renders without plugins in current versions)
-- Standard markdown (tables, lists, code blocks)
-- Wiki-links and core callouts
+For long-lived shared content, prefer the universal set; use plugin-dependent features for personal dashboards only.
 
-Plugin-dependent syntax (Dataview queries, custom CSS classes, plugin-only callout types) breaks if a future user opens the vault without that plugin. For long-lived shared content, prefer the universal set; use plugin features for personal dashboards only.
+Mobile vault sizing rule of thumb: keep under 3-4k files for acceptable startup latency on phones. 10-15 active plugins maximum (or do startup-time measurements before each install).
+
+### Document platform dependencies inline
+
+When generating notes that depend on desktop-only features, prepend a Platform Notes callout so future-readers know what works where:
+
+```markdown
+> [!info] Platform Notes
+> **Desktop**: Full Excalidraw editing, Dataview queries, Canvas multi-pane.
+> **Mobile**: Static diagram exports, markdown tables, core callouts.
+> **Plugins**: Excalidraw, Dataview (optional but enhanced experience).
+```
+
+### Other rendering pitfalls
+
+- **Unicode corruption from copy/paste**: symptom is literal `?` characters in rendered text. Diagnose via `grep '?' <file>.md`. Re-encode the source.
+- **Broken tables (missing blank line)**: pipes/dashes render as literal text. Fix: ensure ONE blank line before any markdown table.
+- **HTML details/summary tags don't render in Obsidian**: don't use `<details>`/`<summary>`; use the `> [!example]-` callout form documented above.
+
+## CLAUDE.md hierarchy within a vault
+
+For vaults spanning multiple knowledge domains, layer CLAUDE.md files at appropriate depths:
+
+- **Vault-root CLAUDE.md**: vault conventions (folder structure principles, universal-features discipline, plugin philosophy, naming rules)
+- **Category folder CLAUDE.md** (e.g., `Projects/CLAUDE.md`, `Reference/CLAUDE.md`): domain-specific patterns
+- **Project folder CLAUDE.md**: project-specific facts (deadlines, collaborators, source materials)
+
+Prevents monolithic memory files; provides the right amount of context at each depth without context-pollution. New projects inherit from parent layers and only add specifics.
+
+## Asset organization
+
+Per-project: keep diagrams/images in `<project>/assets/`, code samples in `<project>/code/`. Use relative paths (`![[../assets/x.png]]` from notes) so the vault stays portable across re-orgs. Avoid absolute paths.
+
+For vaults that grow, the standard PKM structure scales:
+
+```
+vault/
+  Projects/<project-name>/
+    notes/
+    assets/        # diagrams, images
+    code/          # example code
+  Resources/       # textbooks, papers, reference PDFs
+  Daily-Notes/
+  Templates/
+```
+
+Tag by concept rather than by location (`#async-patterns` not `#nodejs-folder`). Properties for metadata (`status`, `created`, `tags`). Bases queries for dynamic overviews on top of the static folder structure.
 
 ## Status
 
