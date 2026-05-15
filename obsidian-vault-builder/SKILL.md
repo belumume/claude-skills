@@ -38,7 +38,7 @@ These are in Obsidian's official community plugin store. Install only what's nee
 1. **Local REST API** (coddingtonbear): base layer for Claude Code <-> vault interaction. HTTPS bearer token; store the key in a password manager. Loopback-only on `127.0.0.1:27124`.
 2. **Obsidian Git**: auto-commit on a schedule, push to a private remote. Note: Obsidian Sync's 30-day version history is NOT a backup; this is.
 3. **Templater**: automation foundation for templates and user scripts.
-4. **Periodic Notes**: daily/weekly/monthly scaffolding. Note: last commit ~21 months ago as of 2026-05; still functional and in store but watch for a maintained successor.
+4. **Daily Notes** (core, no install) + **Calendar** plugin: maintained baseline for daily scaffolding. For weekly/monthly/quarterly/yearly scopes, **Periodic Notes** (`liamcain/obsidian-periodic-notes`) is the only widely-used option; ~21 months stale but still functional. No clean successor exists; community is asking the Obsidian team to absorb it as core. Use Templater for custom periodic-note generation if you outgrow Periodic Notes.
 5. **Style Settings**: theme customization without writing CSS.
 6. **QuickAdd**: macros and capture pipelines.
 7. **Smart Connections**: passive sidebar discovery via local embeddings (free).
@@ -151,7 +151,7 @@ Mermaid is the default for universal compatibility. When it hits a limit, reach 
 | WaveDrom | Digital timing diagrams for hardware/EE documentation | `kingsquirrel152/obsidian-wavedrom` STALE (~16 months no commits). Verify before use. |
 | Kroki | Unified API serving 25+ formats (BlockDiag, BPMN, C4, D2, Mermaid, PlantUML, Vega, etc.) | Self-hostable or public service; verify your specific format support before adopting |
 | Python+Matplotlib | Algorithm traces, statistical plots, scientific viz | External -> embed PNG/SVG |
-| TikZ (LaTeX) | Publication-quality technical diagrams | External -> embed PNG/SVG |
+| TikZ (LaTeX) | Publication-quality technical diagrams | TikZJax (`artisticat1/obsidian-tikzjax`, ~22 months stale; works for most TikZ but unmaintained) for inline; external -> embed PNG/SVG for complex |
 
 ### Decision tree
 
@@ -309,7 +309,7 @@ When generating notes that depend on desktop-only features, prepend a Platform N
 
 ### Other rendering pitfalls
 
-- **Unicode corruption from copy/paste**: symptom is literal `?` characters in rendered text. Diagnose via `grep '?' <file>.md`. Re-encode the source.
+- **Unicode `?` chars in rendered text**: usually a source-app encoding issue (Windows cp1252 vs UTF-8 in the clipboard pipeline) rather than Obsidian itself. Re-encode the source or copy through a UTF-8-aware intermediary.
 - **Broken tables (missing blank line)**: pipes/dashes render as literal text. Fix: ensure ONE blank line before any markdown table.
 - **HTML details/summary tags don't render in Obsidian**: don't use `<details>`/`<summary>`; use the `> [!example]-` callout form documented above.
 
