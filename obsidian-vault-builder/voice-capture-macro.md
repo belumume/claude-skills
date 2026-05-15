@@ -70,14 +70,17 @@ async function transcribeVoice(filepath) {
 module.exports = transcribeVoice;
 ```
 
-## QuickAdd macro configuration (set in plugin GUI)
+## QuickAdd macro configuration (set in plugin GUI; v2.x verified 2026-05-15 against `chhoumann/quickadd:src/gui/choiceList/AddChoiceBox.svelte`)
 
-1. Open Obsidian → Settings → QuickAdd → Manage Macros
-2. Create macro named **Voice Capture**
-3. Add steps in order:
-   1. **User Script** → select `pickVoiceFile`
-   2. **User Script** → select `transcribeVoice`
-   3. **Capture** with these settings:
+1. Open Obsidian, Settings, QuickAdd. There's no "Manage Macros" page in v2.x; macros are added as a Choice TYPE.
+2. In the top "Choices and Packages" section: type **Voice Capture** in the Name field.
+3. Click the type-selector dropdown (HTML `<select>`, defaults to displaying "Template") next to the Name field. The 4 options are Template, Capture, Macro, Multi. Pick **Macro**.
+4. Click **Add Choice** (the purple `mod-cta` button). The macro appears in the choice list above.
+5. Click the gear/settings icon next to "Voice Capture" in the choice list to open the macro configurator.
+6. Inside the configurator, add steps in order:
+   1. **Add, User Script** then select `pickVoiceFile` from the file picker.
+   2. **Add, User Script** then select `transcribeVoice`.
+   3. **Add, Capture** with these settings:
       - Capture To: `Daily Notes/{{date:YYYY-MM-DD}}.md`
       - Create file if missing: ✅
       - Format:
