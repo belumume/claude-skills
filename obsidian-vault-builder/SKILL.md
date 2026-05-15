@@ -58,14 +58,17 @@ Apply the "does this add capability beyond Claude Code reading the vault directl
 
 ## Smart Connections language coverage
 
-Smart Connections ships with an English-only default embedding model. For multilingual vaults (Arabic, Hebrew, CJK, etc.), the default model produces near-noise similarity scores on out-of-distribution content. Workaround:
+Smart Connections ships with an English-only default embedding model (`TaylorAI/bge-micro-v2` distilled from `BAAI/bge-small-en-v1.5`). For multilingual vaults (Arabic, Hebrew, CJK, etc.), the default model produces near-noise similarity scores on out-of-distribution content.
 
+CAVEAT (verified 2026-05): the free tier of Smart Connections does NOT explicitly document arbitrary HuggingFace model swaps. "Advanced filters and models" is listed as a Connections Pro feature. Direct edits to `.smart-env/smart_env.json` may or may not take effect depending on plugin version. Verify via plugin settings UI or by checking `.smart-env/event_logs/event_logs.ajson` after reopen that the new model actually loaded.
+
+If you're on Pro or willing to attempt the direct-edit workaround:
 1. Close Obsidian completely (so the plugin isn't holding state)
-2. Edit `<vault>/.smart-env/smart_env.json` and change `smart_sources.embed_model.transformers.model_key` to a multilingual model. Recommended: `BAAI/bge-m3` (100+ languages, 1024 dims) or `intfloat/multilingual-e5-base` (~100 languages, 768 dims)
+2. Edit `<vault>/.smart-env/smart_env.json` and change `smart_sources.embed_model.transformers.model_key` to a multilingual model. Candidates: `BAAI/bge-m3` (100+ languages including Arabic, 1024 dims, 8192 max_tokens, verified on HuggingFace 2026-05) or `intfloat/multilingual-e5-base` (~100 languages, 768 dims)
 3. Add a corresponding entry to `<vault>/.smart-env/embedding_models/embedding_models.ajson` with the new `model_key`, `dims`, `max_tokens`
 4. Update `embedding_models.default_model_key` in `smart_env.json` to reference the new entry
 5. Delete `<vault>/.smart-env/multi/*.ajson` (the per-file embeddings) to force re-embed
-6. Reopen Obsidian. Smart Connections will download the new model on first load (~500 MB for bge-m3).
+6. Reopen Obsidian. If the swap took, Smart Connections will download the new model on first load (~500 MB for bge-m3). If the swap was ignored, it falls back to default.
 
 Verify multilingual coverage empirically before relying on it for production search.
 
@@ -227,7 +230,7 @@ When generating markdown content for an Obsidian vault, these are the recurring 
 - `≤` and `≥` break Mermaid parsing. Use ASCII `<=` / `>=`.
 - `[1. Text]` triggers "Unsupported markdown: list" error in node labels. Use `["Step 1:<br/>Text"]` (quoted with HTML break).
 - `[text](value)` inside node labels is interpreted as link syntax. Use `{text}(value)` (curly braces).
-- `&` in mindmap nodes (only) renders as `&amp;` (Mermaid issue #6308, fixed v11+ but not in current Obsidian's bundled version). Workaround: Unicode fullwidth ampersand `＆` (U+FF06). Flowcharts/graphs render `&` correctly.
+- `&` in mindmap nodes (only) renders as `&amp;` per Mermaid issue #6308 (closed via PRs #7436 + #6315; affected versions ≤11.4.0). Verify your Obsidian's bundled Mermaid version via DevTools console: `window.mermaid?.version`. If older than the fix, workaround is Unicode fullwidth ampersand `＆` (U+FF06). Flowcharts/graphs render `&` correctly regardless.
 - Diagnose via `grep -r "≤\|≥\|∞\|∈\|≠" *.md` then ASCII-substitute.
 
 ### LaTeX in markdown tables
