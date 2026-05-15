@@ -52,6 +52,13 @@ Autonomous iteration mode using Stop hooks. Claude Code only.
 
 [See ralph-loop/](ralph-loop/)
 
+### Knowledge Management (Obsidian)
+
+#### obsidian-vault-builder
+Patterns for operating an Obsidian vault from Claude Code: capture pipelines, plugin selection, Local REST API integration, file-portability discipline, methodology choice. Multi-vault aware. Includes Smart Connections multilingual coverage workaround and common Obsidian rendering pitfalls (Mermaid/LaTeX/wikilink) reference for any agent writing markdown to a vault. v0.1.0 (not yet validated by external full-PKM build).
+
+[See obsidian-vault-builder/](obsidian-vault-builder/)
+
 ## Plugins
 
 #### pdf-guard

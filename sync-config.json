@@ -30,6 +30,9 @@
     },
     "rtl-document-translation": {
       "export_description": "Translate DOCX to RTL languages (Arabic, Hebrew, Urdu) preserving exact formatting, tables, colors, layouts. Handles quote normalization and multi-pass matching."
+    },
+    "obsidian-vault-builder": {
+      "export_description": "Operate an Obsidian vault from Claude Code: capture pipelines, plugin selection, Local REST API integration, multilingual Smart Connections setup, file-portability and backup discipline. Multi-vault aware. Includes common Obsidian rendering pitfalls (Mermaid/LaTeX/wikilink) for any agent writing markdown to a vault."
     }
   }
 }
