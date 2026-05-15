@@ -26,48 +26,100 @@ Same chain but step 2 calls ElevenLabs API direct: requires API key in Templater
 
 Save these in a **vault-root folder** (e.g., `~/obsidian-claude/scripts/`), **NOT inside `.obsidian/`**. QuickAdd v2.x explicitly rejects scripts inside `.obsidian/` (verified 2026-05-15 against `chhoumann/quickadd:src/gui/MacroGUIs/noScriptsFoundNotice.ts` — the error message says: "In your vault (not in .obsidian folder), Not in hidden folders (starting with a dot), Have a .js extension"). Templater scripts CAN live inside `.obsidian/scripts/`, but QuickAdd User Script steps cannot. If you want both Templater and QuickAdd to use the same `.js`, put it at the vault root.
 
-### `pickVoiceFile.js`
+### `pickVoiceFile.js` (QuickAdd User Script signature, NOT Templater)
 
 ```javascript
-// Templater user function: open file picker for voice memos
-async function pickVoiceFile(tp) {
-  const path = await tp.system.suggester(
-    (file) => file.path,
-    app.vault.getFiles().filter(f =>
-      ['m4a', 'mp3', 'wav', 'ogg'].includes(f.extension)
-    )
+// QuickAdd User Script: file picker for voice memos.
+// Returns the picked file's vault-relative path (becomes {{VALUE}} for next step
+// AND saved to params.variables.voiceFilePath for downstream scripts).
+//
+// Verified 2026-05-15 against chhoumann/quickadd:src/quickAddApi.ts:
+//   - User Scripts receive `params = { quickAddApi, app, variables, ... }`
+//   - quickAddApi.suggester(displayItems, actualItems) returns the picked actualItem
+//
+// IMPORTANT: NOT a Templater user function. Templater would pass `tp` and have
+// `tp.system.suggester`; QuickAdd passes `params` and uses `quickAddApi.suggester`.
+// The two plugins have different script signatures even though both load .js files.
+module.exports = async (params) => {
+  const { quickAddApi, app, variables } = params;
+
+  const audioFiles = app.vault.getFiles().filter((f) =>
+    ["m4a", "mp3", "wav", "ogg", "webm", "flac"].includes(f.extension)
   );
-  return path?.path || null;
-}
-module.exports = pickVoiceFile;
-```
 
-### `transcribeVoice.js` (Path A: uses execFile, not exec)
-
-```javascript
-// Templater user function: invoke Claude Code with ElevenLabs MCP for transcription.
-// Uses execFile (NOT exec) to prevent command injection per user CLAUDE.md security guidance.
-async function transcribeVoice(filepath) {
-  const { execFile } = require('child_process');
-  const { promisify } = require('util');
-  const execFileAsync = promisify(execFile);
-
-  // Validate filepath (defensive: Templater context but be safe)
-  if (!filepath || typeof filepath !== 'string') {
-    throw new Error('transcribeVoice: filepath required');
+  if (audioFiles.length === 0) {
+    new Notice("pickVoiceFile: no audio files in vault");
+    return null;
   }
 
-  const prompt = `use elevenlabs MCP to transcribe ${filepath} and return only the transcript text, no commentary, no markdown formatting`;
+  const picked = await quickAddApi.suggester(
+    audioFiles.map((f) => f.path),
+    audioFiles
+  );
 
-  // execFile takes program + arg array: no shell, no injection.
-  const { stdout } = await execFileAsync('claude-code', ['--prompt', prompt], {
-    maxBuffer: 10 * 1024 * 1024,  // 10 MB transcript ceiling
-    timeout: 120000,                // 2 min cap
-  });
+  if (!picked) return null;
+  variables.voiceFilePath = picked.path;
+  return picked.path;
+};
+```
 
-  return stdout.trim();
-}
-module.exports = transcribeVoice;
+### `transcribeVoice.js` (uses execFile not exec; QuickAdd User Script signature)
+
+```javascript
+// QuickAdd User Script: transcribe voice memo via Claude Code + ElevenLabs MCP.
+// Reads filepath from params.variables.voiceFilePath (set by pickVoiceFile).
+// Returns the transcript text, which becomes {{VALUE}} for the Capture step.
+//
+// Verified 2026-05-15:
+//   - Binary is `claude` (NOT `claude-code`); flag is `-p "<prompt>"` (NOT `--prompt`).
+//     Find your binary's full path with `where claude` (Windows) or `which claude` (Unix).
+//   - QuickAdd's spawned subprocess env may not have ~/.local/bin on PATH; use full path.
+//   - ElevenLabs MCP must be reachable from the spawned Claude process; verified
+//     present in ~/.claude.json for the original setup.
+module.exports = async (params) => {
+  const { quickAddApi, app, variables } = params;
+
+  const filepath = variables.voiceFilePath;
+  if (!filepath) {
+    new Notice("transcribeVoice: no filepath in variables. Run pickVoiceFile first.");
+    return null;
+  }
+
+  const path = require("path");
+  const vaultRoot = app.vault.adapter.basePath || app.vault.adapter.getBasePath?.() || "";
+  const absPath = vaultRoot ? path.join(vaultRoot, filepath) : filepath;
+
+  const prompt =
+    `use elevenlabs MCP to transcribe "${absPath}" and return ONLY the transcript text. ` +
+    `no commentary, no preamble, no markdown formatting, no quotes around the text.`;
+
+  const { execFile } = require("child_process");
+  const { promisify } = require("util");
+  const execFileAsync = promisify(execFile);
+
+  // Replace with the absolute path your `where claude` / `which claude` returns.
+  const claudeBin = "C:/Users/<you>/.local/bin/claude.exe";
+
+  try {
+    new Notice("transcribeVoice: invoking Claude + ElevenLabs MCP (may take 30s-2min)...");
+    const { stdout, stderr } = await execFileAsync(claudeBin, ["-p", prompt], {
+      maxBuffer: 10 * 1024 * 1024,
+      timeout: 120000,
+    });
+
+    const transcript = stdout.trim();
+    if (!transcript) {
+      new Notice("transcribeVoice: empty transcript returned");
+      if (stderr) console.warn("claude stderr:", stderr);
+      return null;
+    }
+    return transcript;
+  } catch (e) {
+    new Notice(`transcribeVoice failed: ${e.message}`);
+    console.error("transcribeVoice error:", e);
+    throw e;
+  }
+};
 ```
 
 ## QuickAdd macro configuration (set in plugin GUI; v2.x verified 2026-05-15 against `chhoumann/quickadd:src/gui/choiceList/AddChoiceBox.svelte`)
