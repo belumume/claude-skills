@@ -111,16 +111,42 @@ module.exports = async (params) => {
     if (!transcript) {
       new Notice("transcribeVoice: empty transcript returned");
       if (stderr) console.warn("claude stderr:", stderr);
-      return null;
+      throw new Error("empty transcript");
     }
-    return transcript;
   } catch (e) {
     new Notice(`transcribeVoice failed: ${e.message}`);
     console.error("transcribeVoice error:", e);
     throw e;
   }
+
+  // DIRECT WRITE to today's daily note. Bypasses QuickAdd's NestedChoice +
+  // Capture step, which doesn't auto-populate {{VALUE}} from the macro chain
+  // (verified failure mode 2026-05-15: NestedChoice opens an empty input
+  // prompt instead of consuming the prior script's return value).
+  const now = new Date();
+  const yyyy = now.getFullYear();
+  const mm = String(now.getMonth() + 1).padStart(2, "0");
+  const dd = String(now.getDate()).padStart(2, "0");
+  const hh = String(now.getHours()).padStart(2, "0");
+  const min = String(now.getMinutes()).padStart(2, "0");
+  // Match Obsidian Daily Notes core-plugin defaults: YYYY-MM-DD.md at vault
+  // root. If your daily-notes config uses a subfolder, prefix here.
+  const dailyNotePath = `${yyyy}-${mm}-${dd}.md`;
+  const block = `\n## Voice memo ${hh}:${min}\n\n${transcript}\n`;
+
+  const file = app.vault.getAbstractFileByPath(dailyNotePath);
+  if (file && file.path) {
+    const existing = await app.vault.read(file);
+    await app.vault.modify(file, existing + block);
+  } else {
+    await app.vault.create(dailyNotePath, block);
+  }
+  new Notice(`Voice memo appended to ${dailyNotePath} (${transcript.length} chars).`, 5000);
+  return transcript;
 };
 ```
+
+**IMPORTANT — macro structure for the direct-write variant:** the macro should have only TWO commands: `pickVoiceFile` and `transcribeVoice`. Do NOT add a Capture step. The Capture-step path was tried and failed (QuickAdd wraps Capture in a NestedChoice when added inside a macro, and NestedChoice does NOT auto-populate `{{VALUE}}` from the macro's running value — it opens an empty input prompt instead). Direct vault-write from `transcribeVoice` is the verified-working path (validated 2026-05-15 with a 5MB / ~25-min audio file: 108s end-to-end).
 
 ## QuickAdd macro configuration (set in plugin GUI; v2.x verified 2026-05-15 against `chhoumann/quickadd:src/gui/choiceList/AddChoiceBox.svelte`)
 
@@ -129,23 +155,10 @@ module.exports = async (params) => {
 3. Click the type-selector dropdown (HTML `<select>`, defaults to displaying "Template") next to the Name field. The 4 options are Template, Capture, Macro, Multi. Pick **Macro**.
 4. Click **Add Choice** (the purple `mod-cta` button). The macro appears in the choice list above.
 5. Click the gear/settings icon next to "Voice Capture" in the choice list to open the macro configurator.
-6. Inside the configurator, add steps in order:
+6. Inside the configurator, add EXACTLY two steps (do not add a Capture step):
    1. **Add, User Script** then select `pickVoiceFile` from the file picker.
    2. **Add, User Script** then select `transcribeVoice`.
-   3. **Add, Capture** with these settings:
-      - **File path / format:** match your daily-notes setup (check Obsidian Settings, Daily notes, "New file location"). For vault-root daily notes use `{{DATE:YYYY-MM-DD}}.md`. For a subfolder use `<your-folder>/{{DATE:YYYY-MM-DD}}.md`. Variable names ARE case-sensitive: uppercase `{{DATE}}` and `{{VALUE}}` are canonical (verified 2026-05-15 against `chhoumann/quickadd:src/formatters/fileNameDisplayFormatter.test.ts`).
-      - **Create file if it doesn't exist:** ON
-      - **Position, Write position:** Bottom of file (so memos append, not push down existing content)
-      - **Capture format:** ON
-      - **Format textarea:**
-        ```
-        
-        ## Voice memo {{DATE:HH:mm}}
-        
-        {{VALUE}}
-        
-        ```
-4. Bind to ribbon icon or hotkey (e.g., `Ctrl+Alt+V`)
+7. Bind to ribbon icon or hotkey (e.g., `Ctrl+Alt+V`).
 
 ## Testing checklist (Wave 4 empirical validation)
 
