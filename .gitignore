@@ -14,8 +14,6 @@
 # Approved custom skills
 !obsidian-vault-builder/
 !obsidian-vault-builder/**
-!obsidian-study-vault-builder/
-!obsidian-study-vault-builder/**
 !document-quality-standards/
 !document-quality-standards/**
 !docx-advanced-patterns/

@@ -223,7 +223,7 @@ Obsidian Sync's 30-day version history is NOT backup. For real backup:
 
 ## Common Obsidian rendering pitfalls (writing markdown to a vault)
 
-When generating markdown content for an Obsidian vault, these are the recurring rendering issues. Patterns extracted from the companion skill `obsidian-study-vault-builder` (battle-tested across 37+ academic study files); folded here because they apply to ANY agent writing markdown to a vault, not just academic builds.
+When generating markdown content for an Obsidian vault, these are the recurring rendering issues. Patterns extracted from a deprecated companion skill (`obsidian-study-vault-builder`, removed via PR #6 and re-validated 2026-05-15: over-triggered on exam-prep prompts and was structurally misaligned with the interactive-practice approach). The durable patterns below were folded here permanently because they apply to ANY agent writing markdown to a vault, not just academic builds.
 
 ### Mermaid diagrams
 
