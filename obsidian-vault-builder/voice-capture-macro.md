@@ -24,7 +24,7 @@ Same chain but step 2 calls ElevenLabs API direct: requires API key in Templater
 
 ## User-function templates
 
-Save these in `~/obsidian-claude/.obsidian/scripts/templater-user-functions/`.
+Save these in a **vault-root folder** (e.g., `~/obsidian-claude/scripts/`), **NOT inside `.obsidian/`**. QuickAdd v2.x explicitly rejects scripts inside `.obsidian/` (verified 2026-05-15 against `chhoumann/quickadd:src/gui/MacroGUIs/noScriptsFoundNotice.ts` — the error message says: "In your vault (not in .obsidian folder), Not in hidden folders (starting with a dot), Have a .js extension"). Templater scripts CAN live inside `.obsidian/scripts/`, but QuickAdd User Script steps cannot. If you want both Templater and QuickAdd to use the same `.js`, put it at the vault root.
 
 ### `pickVoiceFile.js`
 
