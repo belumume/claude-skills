@@ -1,11 +1,12 @@
 ---
 name: document-quality-standards
 description: Use when creating or editing documents (DOCX, PDF, XLSX, PPTX) that need professional output. Adds visual verification, typography hygiene, and formula patterns to the document-skills plugin.
-version: 1.0.0
-dependencies:
-  - poppler-utils
-  - libreoffice
-  - openpyxl
+metadata:
+  version: 1.0.0
+  dependencies:
+    - poppler-utils
+    - libreoffice
+    - openpyxl
 ---
 
 # Document Quality Standards

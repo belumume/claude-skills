@@ -1,14 +1,15 @@
 ---
 name: obsidian-vault-builder
 description: Use when adding/editing/querying content in an existing Obsidian vault, configuring plugins, integrating Claude Code with Obsidian via Local REST API or CLI, automating ongoing capture/organization/retrieval, designing a personal knowledge management workflow, OR building academic study vaults (course prep, exam-ready, mock-exam content — the durable academic-study patterns from a deprecated companion skill have been folded into this one).
-version: 0.1.0
-tags:
-  - obsidian
-  - knowledge-management
-  - markdown
-  - vaults
-  - pkm
-  - tools-for-thought
+metadata:
+  version: 0.1.0
+  tags:
+    - obsidian
+    - knowledge-management
+    - markdown
+    - vaults
+    - pkm
+    - tools-for-thought
 ---
 
 # Obsidian Vault Builder (general PKM, multi-vault aware)
@@ -24,6 +25,23 @@ Patterns for operating an Obsidian vault from Claude Code: capture pipelines, pl
 - User wants to integrate Claude Code with Obsidian via Local REST API or CLI
 - User wants to automate ongoing capture/organization/retrieval
 - User wants to design a PKM workflow
+
+## Checkpoint-based vault build (greenfield, large generation tasks)
+
+When generating a vault from scratch or filling in many chapters/sections at once, **never generate everything upfront**. Use progressive validation:
+
+1. **First chapter / first section** then STOP
+2. **User review** then approve format, structure, quality
+3. **Remaining chapters / sections** then continue with validated pattern
+4. **Final QA pass** then systematic verification per `QA-CHECKLIST.md`
+
+Why this matters:
+- Catches format issues before they multiply across 30+ files
+- Validates approach matches user needs early
+- Adjusts course when cheap (chapter 1) vs expensive (chapter 8)
+- Prevents 5+ hours of rework
+
+Approximate time budget for a typical academic course (10 chapters): chapter 1 ~30 min, review ~15 min, remaining ~90 min, QA ~30 min = ~2.5 hours vs 80+ hours manual. Pattern is greenfield-build universal; applies equally to paper/book/codebase-docs generation.
 
 ## Multi-vault layout (when applicable)
 
@@ -300,6 +318,26 @@ When generating notes that depend on desktop-only features, prepend a Platform N
 > **Plugins**: Excalidraw, Dataview (optional; richer experience).
 ```
 
+### Structural-consistency error patterns (5-8)
+
+Patterns 1-4 above are content-rendering errors. Patterns 5-8 are structural-consistency errors that surface when many files are generated. Each carries a diagnose + fix recipe:
+
+- **Pattern 5: Inconsistent navigation across files.** Some files have `[[← Back]] | [[Quick Ref →]]` headers, others don't. Diagnose: `grep -L "← Back" 01-*/core-concepts.md` (lists files WITHOUT the marker). Fix: apply the navigation-link pattern (see "Academic content patterns" below) to every file. Verify: re-grep returns empty.
+- **Pattern 6: Missing learning objectives.** Some chapter files lack the `## Learning Objectives (COX)` block tying to course outcomes. Diagnose: `grep -L "## Learning Objectives" 01-*/core-concepts.md`. Fix: add the callout per the pattern.
+- **Pattern 7: Inconsistent table of contents.** Files >500 lines need a TOC; smaller files don't. Diagnose: `for f in *.md; do lines=$(wc -l < "$f"); if [ "$lines" -gt 500 ] && ! grep -q "## Table of Contents" "$f"; then echo "$f"; fi; done`. Fix: add TOC.
+- **Pattern 8: Broken cross-references.** Wiki-links to other chapters fail. Diagnose: `obsidian.com unresolved`. Fix: convert markdown links to wiki-link form; verify with `obsidian.com search` for the target heading text.
+
+### Systematic fix approach (for any consistency error)
+
+When you find one instance of an inconsistency, others almost always exist. The diagnose-once, fix-one approach is a trap:
+
+1. **Grep all** — find every file matching the broken pattern, NOT just the one user flagged
+2. **Fix all** — apply the corrected pattern across all matches in one pass
+3. **Re-grep** — verify zero remaining matches
+4. **Document** — add the diagnose+fix to memory so the next session doesn't re-derive it
+
+Evidence: study-vault-builder arc found that user reports of "this file looks wrong" were almost always tip-of-iceberg; 1 user-flagged file → 4-8 sibling files with the same issue. Spot-fixing required a third round trip. Greedy-grep avoids the loop.
+
 ### Other rendering pitfalls
 
 - **Unicode `?` chars in rendered text**: usually a source-app encoding issue (Windows cp1252 vs UTF-8 in the clipboard pipeline) rather than Obsidian itself. Re-encode the source or copy through a UTF-8-aware intermediary.
@@ -326,6 +364,130 @@ Two patterns are in active community use; neither has clear consensus as the "ri
 - **Flat attachment folder**: Obsidian's default; single `attachments/` (or configured equivalent) at vault root, all paste-images go there. Best for cross-cutting reuse and simpler image-management.
 
 Pick based on portability needs (per-project wins) vs cross-vault reuse (flat wins). Avoid absolute paths in either pattern.
+
+### Academic study vault scaffold
+
+For course-prep vaults (lecture notes, exam-ready material, mock exams), the standard PKM scaffold is wrong shape. Use this proven scaffold instead:
+
+```
+course-name/
+├── 00-overview/              # Course map, schedule, exam strategy
+│   ├── course-map.md         # Master TOC: chapters + cross-chapter links
+│   ├── schedule.md           # Lecture/assessment dates
+│   └── exam-strategy.md      # Topic priorities, instructor patterns
+├── 01-chapter-name/          # One folder per chapter
+│   ├── core-concepts.md      # Comprehensive guide (20-50KB)
+│   ├── quick-ref.md          # Condensed summary (2-5KB)
+│   └── practice-problems.md  # 10 problems + collapsible solutions
+├── 02-chapter-name/          # Same per-chapter trio
+├── cross-chapter/            # Topic comparisons that span chapters
+│   ├── pattern-catalog.md    # Reusable patterns
+│   └── exam-style-mapping.md # Which patterns appear in which exam style
+└── mock-exams/               # Past papers + simulated tests
+    ├── 2026-midterm-1.md
+    └── 2026-final-practice.md
+```
+
+Why this shape:
+- `00-overview/course-map.md` is the entry point; every chapter file links back here
+- Per-chapter trio gives three reading depths (deep / quick / applied)
+- `cross-chapter/` lifts comparisons out of any single chapter (they belong to none)
+- `mock-exams/` is the rehearsal layer for exam-style alignment
+
+### Per-chapter file structure (universal)
+
+Each `01-chapter-name/` follows this pattern. The structure is required for the cross-chapter cross-references in patterns above to work consistently.
+
+**`core-concepts.md` must contain (in order):**
+1. Title: `# Chapter X: Name`
+2. Navigation: `[[../00-overview/course-map|← Back]] | [[quick-ref|Quick Ref →]]`
+3. Divider: `---`
+4. Learning Objectives: `## Learning Objectives (COX)` block
+5. Divider: `---`
+6. Table of Contents: `## Table of Contents` (if file >500 lines)
+7. Content sections with examples
+8. Cross-references to other chapters
+
+**`quick-ref.md` must contain:**
+1. Title + navigation back to `core-concepts.md`
+2. Condensed key concepts (no examples, no explanations — just what + when)
+3. Quick-lookup tables (complexities, formulas, rules)
+
+**`practice-problems.md` must contain:**
+1. Title with chapter name
+2. Navigation links back to `core-concepts.md` and `quick-ref.md`
+3. Overview section
+4. Table of Contents (if >10 problems)
+5. Problem sets grouped by type
+6. All solutions in collapsible callouts (`> [!example]-`)
+
+## Academic content patterns
+
+These three patterns are universal for any course-prep vault:
+
+### Navigation link pattern
+
+Every chapter file starts with the same shape, providing reader orientation:
+
+```markdown
+# Chapter Title
+
+[[../00-overview/course-map|← Back to Course Map]] | [[quick-ref|Quick Reference →]]
+
+---
+```
+
+Rules:
+- Always provide a way back to course map (anchor of the vault)
+- Link to sibling files (quick-ref, practice)
+- Use relative paths from current location
+- Test links work via `obsidian.com unresolved` after creating
+
+### Learning objectives pattern (CO mapping)
+
+University courses typically map to Course Outcomes (CO1, CO2, ...). Tie each chapter to its CO so the vault doubles as an exam-prep matrix:
+
+```markdown
+## Learning Objectives (CO4)
+
+> [!note] Course Outcome CO4
+> **Compose problem-solving approaches to solve problems**
+>
+> By the end of this chapter, you should be able to:
+> - Identify problems suitable for divide-and-conquer
+> - Apply the algorithm with correct complexity analysis
+> - Compare divide-and-conquer vs dynamic-programming trade-offs
+```
+
+For non-university content (textbook chapters, self-study), substitute "Learning Objectives" without the CO label.
+
+### Applied understanding (not memorization)
+
+Practice problems should test application, not recall. Question patterns that work:
+
+- "Design [system] for [context]. Current [problem]. Describe solution to achieve [goal]. Analyze trade-offs and justify."
+- "Given [scenario], which algorithm is appropriate and why? Compare against the alternative."
+- "Trace [algorithm] on [input], showing state at each step."
+
+Adapts to subject domain:
+- CS: Algorithm design scenarios
+- Medicine: Case-based diagnosis
+- Business: Strategic analysis
+- Physics: Experimental design
+- Math: Proof-construction or counterexample
+
+Avoid: "Define X." "What is Y?" "List the steps of Z." These test memorization, fail to predict exam performance, and bore the student.
+
+## Comprehensive coverage principle
+
+Every topic from source materials must appear in the vault. Coverage gaps cause exam-day surprises. Validation:
+
+1. Extract source outline (textbook TOC, syllabus, lecture index)
+2. Cross-reference against vault TOC
+3. Diff produces gap list
+4. Build out the gaps before declaring "complete"
+
+Concrete: `comm -23 <(sort source-outline.txt) <(sort vault-toc.txt)` returns topics in source NOT in vault.
 
 For vaults that grow, the standard PKM structure scales:
 

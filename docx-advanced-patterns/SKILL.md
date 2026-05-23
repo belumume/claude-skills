@@ -1,10 +1,11 @@
 ---
 name: docx-advanced-patterns
 description: Advanced python-docx patterns for handling nested tables, complex cell structures, and content extraction beyond basic .text property. Complements the official docx skill with specialized techniques for forms, checklists, and complex layouts.
-version: 1.0.0
-dependencies:
-  - python>=3.8
-  - python-docx>=0.8.11
+metadata:
+  version: 1.0.0
+  dependencies:
+    - "python>=3.8"
+    - "python-docx>=0.8.11"
 ---
 
 # DOCX Advanced Patterns Skill

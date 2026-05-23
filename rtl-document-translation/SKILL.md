@@ -1,11 +1,12 @@
 ---
 name: rtl-document-translation
 description: Translate structured documents (DOCX) to RTL languages (Arabic, Hebrew, Urdu) while preserving exact formatting, table structures, colors, and layouts. Handles quote normalization, multi-pass translation matching, and RTL-specific formatting patterns.
-version: 1.0.0
-dependencies:
-  - python>=3.8
-  - python-docx>=0.8.11
-  - Pillow>=9.0.0
+metadata:
+  version: 1.0.0
+  dependencies:
+    - "python>=3.8"
+    - "python-docx>=0.8.11"
+    - "Pillow>=9.0.0"
 ---
 
 # RTL Document Translation Skill

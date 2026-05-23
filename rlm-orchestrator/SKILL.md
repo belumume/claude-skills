@@ -6,17 +6,16 @@ description: >-
   that would benefit from parallel execution, or when context rot is a concern.
   Automatically decomposes tasks, spawns parallel subagents, aggregates results,
   and iterates until completion. Inspired by the RLM research paper (arXiv:2512.24601).
-trigger: >-
-  When user mentions "RLM", "recursive", "parallel agents", "context rot prevention",
-  "large context task", or when facing tasks that would exceed comfortable context limits
-version: 1.0.0
-tags:
-  - orchestration
-  - subagents
-  - context-management
-  - parallel-execution
-  - rlm
-  - claude-code-only
+metadata:
+  version: 1.0.0
+  tags:
+    - orchestration
+    - subagents
+    - context-management
+    - parallel-execution
+    - rlm
+    - claude-code-only
+  trigger: "When user mentions RLM, recursive, parallel agents, context rot prevention, large context task"
 ---
 
 # RLM-Style Recursive Orchestrator

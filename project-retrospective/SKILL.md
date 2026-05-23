@@ -1,7 +1,16 @@
 ---
 name: project-retrospective
-description: Use when a project needs multi-session retrospective analysis — after milestones, before starting a new phase, when vision drift is suspected, or every 3-5 sessions. Triggers: user says "retro", "run a retro", "since-last-retro"; asks to analyze patterns, recurring mistakes, or correction trends across multiple sessions; says "how did we get here" or "project history" in a project-arc context (not single-file diffs or README edits); or notes that MEMORY.md has drifted from what actually happened across sessions. NOT for: single-session review, MEMORY.md cleanup, retro templates, or git-level file diffs.
-argument-hint: [full | since-last-retro | last-N]
+description: >-
+  Use when a project needs multi-session retrospective analysis: after milestones,
+  before starting a new phase, when vision drift is suspected, or every 3-5 sessions.
+  Triggers include user saying retro, run a retro, since-last-retro; asks to analyze
+  patterns, recurring mistakes, or correction trends across multiple sessions; says
+  how did we get here or project history in a project-arc context (not single-file
+  diffs or README edits); or notes that MEMORY.md has drifted from what actually
+  happened across sessions. NOT for single-session review, MEMORY.md cleanup,
+  retro templates, or git-level file diffs.
+metadata:
+  argument-hint: "[full | since-last-retro | last-N]"
 ---
 
 # Project Retrospective
