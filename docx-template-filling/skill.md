@@ -1,10 +1,11 @@
 ---
 name: docx-template-filling
 description: Fill DOCX template forms programmatically while preserving 100% of original structure - logos, footers, styles, metadata. Zero-artifact insertion for forms, applications, and standardized documents. Output indistinguishable from manual filling.
-version: 1.0.0
-dependencies:
-  - python>=3.8
-  - python-docx>=0.8.11
+metadata:
+  version: 1.0.0
+  dependencies:
+    - "python>=3.8"
+    - "python-docx>=0.8.11"
 ---
 
 # DOCX Template Filling - Forensic Preservation
