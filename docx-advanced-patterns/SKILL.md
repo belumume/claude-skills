@@ -403,11 +403,7 @@ clean_text = text.replace('⁮', '').replace('☐', '').replace('☑', '').repla
 
 ## Reference Implementation
 
-See `REFERENCE.md` for:
-- Complete working examples
-- Integration patterns
-- Advanced recursive extraction
-- Performance optimization techniques
+The patterns above are self-contained; no separate `REFERENCE.md` ships with this skill (the earlier pointer was vestigial). Working examples, integration patterns, recursive extraction, and performance notes are inline in the sections above.
 
 ## Contributing to Anthropic Skills
 

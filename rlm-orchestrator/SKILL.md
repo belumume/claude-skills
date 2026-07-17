@@ -190,7 +190,7 @@ Track token consumption across the orchestration:
 |-----------|------------------|-------|
 | Main conversation | 200K max | Reserve 50K for orchestration |
 | Per subagent | 200K max | Fresh context each |
-| Subagent overhead | ~20K | System prompt + tools |
+| Subagent overhead | ~20K | System prompt + tools (see caveat) |
 | Summary return | ~2-5K | Per subagent result |
 
 **Budget formula:**
@@ -198,6 +198,8 @@ Track token consumption across the orchestration:
 Effective capacity = (Main 150K usable) + (N subagents × 180K usable each)
 For 5 subagents: 150K + 900K = ~1M effective tokens
 ```
+
+> **Caveat (this config, 2026-07-17):** the ~20K-overhead / 180K-usable figures are the generic RLM-paper model. On THIS machine a custom subagent inherits the whole memory hierarchy for a base of ~235k tokens (rules ~195k + CLAUDE.md ~8.6k + ~31k fixed), which alone exceeds a 200K-window subagent — so a sub-1M-window subagent cannot start, and "180K usable each" does not hold. Use a 1M-window model for subagents, or the built-in `Explore` agent (which skips the rules corpus). See `~/.claude/rules/agent-prompt-discipline.md` rule 15b for the measurements.
 
 ## Integration with Existing Skills
 
