@@ -46,7 +46,7 @@
       "our novel approach",
       "we propose a novel"
     ],
-    "_note": "Identity-specific patterns live in sync-config.local.json, which is gitignored. This file is PUBLIC, so a pattern naming the operator would publish the very string it exists to block. sync_skills.py REFUSES to run if the local overlay is missing or empty."
+    "_note": "Identity-specific patterns are deliberately absent from this file and live in sync-config.local.json, which is gitignored. This file is public, so a pattern naming a person would publish the very string it exists to block. NOTE FOR ANYONE CLONING THIS REPO: the sync tooling that merges the two files, and that refuses to run when the overlay is missing, is maintained outside this repository, so a clone gets no refusal mechanism from here. What a clone does get is a config that names nobody. Earlier commits in this repo's history still contain the removed patterns; this change stops adding to that, it does not erase it."
   },
   "skills": {
     "document-quality-standards": {
