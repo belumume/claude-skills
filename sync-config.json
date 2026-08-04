@@ -1,10 +1,6 @@
 {
   "safety": {
     "block_patterns": [
-      "C:\\\\Users\\\\elzai",
-      "/c/Users/elzai",
-      "/home/elzai",
-      "avidlearner111",
       "hf_[A-Za-z0-9]{20,}",
       "sk-or-v1-[A-Za-z0-9]{20,}",
       "sk-[A-Za-z0-9]{20,}",
@@ -14,9 +10,43 @@
       "\\.env\\.local"
     ],
     "warn_patterns": [
-      "quantelect",
-      "ubaid"
-    ]
+      "\u2014",
+      "\u2192",
+      "\u2022",
+      "\u2605",
+      "\u25c6",
+      "\u25cf",
+      "\u25b8",
+      "\u2023",
+      "\u27f6",
+      "\u21d2",
+      "\u203b",
+      "\u25ca",
+      "\\bactionable\\b",
+      "\\bcomprehensive\\b",
+      "\\bleverage\\b",
+      "\\bdelve\\b",
+      "\\btapestry\\b",
+      "\\bfacilitate\\b",
+      "\\butilize\\b",
+      "\\benhance\\b",
+      "\\bstreamline\\b",
+      "\\brobust\\b",
+      "\\bFurthermore\\b",
+      "\\bMoreover\\b",
+      "\\bIt's worth noting\\b",
+      "\\bHappy to discuss further\\b",
+      "\\bHope this helps\\b",
+      "\\bLet me know if\\b",
+      "\\bGreat question\\b",
+      "\\bLooking forward to\\b",
+      "to the best of our knowledge",
+      "it should be noted that",
+      "it is well[- ]known that",
+      "our novel approach",
+      "we propose a novel"
+    ],
+    "_note": "Identity-specific patterns live in sync-config.local.json, which is gitignored. This file is PUBLIC, so a pattern naming the operator would publish the very string it exists to block. sync_skills.py REFUSES to run if the local overlay is missing."
   },
   "skills": {
     "document-quality-standards": {
@@ -30,6 +60,9 @@
     },
     "rtl-document-translation": {
       "export_description": "Translate DOCX to RTL languages (Arabic, Hebrew, Urdu) preserving exact formatting, tables, colors, layouts. Handles quote normalization and multi-pass matching."
+    },
+    "obsidian-vault-builder": {
+      "export_description": "Operate an Obsidian vault from Claude Code: capture pipelines, plugin selection, Local REST API integration, multilingual Smart Connections setup, file-portability and backup discipline. Multi-vault aware. Includes common Obsidian rendering pitfalls (Mermaid/LaTeX/wikilink) for any agent writing markdown to a vault."
     }
   }
 }
