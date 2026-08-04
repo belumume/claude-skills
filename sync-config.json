@@ -1,10 +1,6 @@
 {
   "safety": {
     "block_patterns": [
-      "C:\\\\Users\\\\elzai",
-      "/c/Users/elzai",
-      "/home/elzai",
-      "avidlearner111",
       "hf_[A-Za-z0-9]{20,}",
       "sk-or-v1-[A-Za-z0-9]{20,}",
       "sk-[A-Za-z0-9]{20,}",
@@ -14,8 +10,6 @@
       "\\.env\\.local"
     ],
     "warn_patterns": [
-      "quantelect",
-      "ubaid",
       "—",
       "→",
       "•",
@@ -51,7 +45,8 @@
       "it is well[- ]known that",
       "our novel approach",
       "we propose a novel"
-    ]
+    ],
+    "_note": "Identity-specific patterns live in sync-config.local.json, which is gitignored. This file is PUBLIC, so a pattern naming the operator would publish the very string it exists to block. sync_skills.py REFUSES to run if the local overlay is missing or empty."
   },
   "skills": {
     "document-quality-standards": {
