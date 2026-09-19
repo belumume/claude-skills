@@ -233,7 +233,7 @@ def generate_delegation_guidance(
     guidance.append("### Recommended Actions")
     guidance.append("")
     guidance.append(
-        "1. **Use `/rlm-orchestrator` skill** for automatic task decomposition"
+        "1. **Decompose the task and delegate the parts** to subagents with written briefs"
     )
     guidance.append("2. **Spawn Explore subagent** for remaining file analysis:")
     guidance.append("   ```")

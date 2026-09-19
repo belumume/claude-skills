@@ -1,6 +1,12 @@
 ---
 name: compaction-check
 description: Answer the operator's compaction question (can I /compact now, is everything compounded and non-stale, is anything outstanding) by re-deriving the answer rather than recalling it. Use whenever he asks whether to compact, whether the session is ready to close, whether everything is compounded, or when he re-sends "compound, compact, handoff.txt"; and unprompted before any planned compaction.
+metadata:
+  version: 0.1.0
+  tags:
+    - session-management
+    - compaction
+    - verification
 ---
 
 # Compaction check
