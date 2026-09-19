@@ -16,7 +16,7 @@ metadata:
 
 Patterns for operating an Obsidian vault from Claude Code: capture pipelines, plugin selection, REST API integration, file-portability discipline, methodology choice. Multi-vault aware.
 
-For academic study vault construction (course prep, lecture notes, mock exams, exam-ready content): the durable patterns from the deprecated `obsidian-study-vault-builder` skill have been folded into this skill. See `references/academic-vault.md`. The companion skill itself was removed via PR #6 and re-validated 2026-05-15 (over-triggered on exam-prep prompts; structurally misaligned with the interactive-practice approach in `~/.claude/rules/exam-prep-protocol.md`).
+For academic study vault construction (course prep, lecture notes, mock exams, exam-ready content): the durable patterns from the deprecated `obsidian-study-vault-builder` skill have been folded into this skill. See `references/academic-vault.md`. The companion skill itself was removed via PR #6 and re-validated 2026-05-15 (over-triggered on exam-prep prompts; structurally misaligned with the interactive-practice approach in the exam-prep protocol, itself ablated 2026-08-28).
 
 ## When to use
 

@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 """
-Enhanced Context Tracker with RLM-Aware Guidance.
+Enhanced Context Tracker with partition-aware delegation guidance.
+
+Note: "RLM" below names the Recursive Language Model TECHNIQUE (partition / grep /
+peek), which is still valid. It does NOT refer to the retired rlm-orchestrator skill,
+which was removed because its premises were falsified (subagents can nest, contexts
+are 1M), not because the technique is wrong. Internal names are left as-is on purpose.
 
 Tracks cumulative file reads across a session and provides intelligent
 recommendations for subagent delegation based on RLM (Recursive Language Model)
@@ -216,7 +221,7 @@ def generate_delegation_guidance(
     rlm_suggestions = suggest_rlm_strategy(state, new_file)
 
     guidance = []
-    guidance.append("## RLM Orchestration Recommended")
+    guidance.append("## Context High: Decompose and Delegate")
     guidance.append("")
     guidance.append(
         f"**Context status:** ~{estimated_tokens:,} tokens consumed ({state['read_count']} files)"
@@ -233,7 +238,7 @@ def generate_delegation_guidance(
     guidance.append("### Recommended Actions")
     guidance.append("")
     guidance.append(
-        "1. **Use `/rlm-orchestrator` skill** for automatic task decomposition"
+        "1. **Decompose the task and delegate the parts** to subagents with written briefs"
     )
     guidance.append("2. **Spawn Explore subagent** for remaining file analysis:")
     guidance.append("   ```")
