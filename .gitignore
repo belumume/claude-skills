@@ -12,6 +12,8 @@
 !sync-config.json
 
 # Approved custom skills
+!compaction-check/
+!compaction-check/**
 !obsidian-vault-builder/
 !obsidian-vault-builder/**
 !document-quality-standards/
