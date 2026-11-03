@@ -1,0 +1,34 @@
+name: Strip Claude IDs from PR text
+# Commits are covered by no-claude-ids.yml. This covers what commits can't:
+# PR descriptions, issues, comments and reviews, which agents post through the
+# GitHub API with a claude.ai session link in the footer.
+on:
+  pull_request_target:
+    types: [opened, edited, reopened]
+  issues:
+    types: [opened, edited]
+  issue_comment:
+    types: [created, edited]
+  pull_request_review_comment:
+    types: [created, edited]
+  pull_request_review:
+    types: [submitted, edited]
+  workflow_dispatch:
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+jobs:
+  strip:
+    runs-on: ubuntu-latest
+    steps:
+      # Runs the default branch's copy of the script, never a PR's.
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          sparse-checkout: .github/scripts
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const { run } = require('./.github/scripts/strip-claude-ids.js');
+            await run({ github, context, core });

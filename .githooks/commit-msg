@@ -1,0 +1,14 @@
+#!/bin/sh
+# Project rule: no Claude identifiers in commits. Strip the attribution
+# trailers and any claude.ai link or claude.ai/... path. The bare word
+# claude.ai is kept. Needs GNU sed (Linux, Git for Windows).
+msg="$1"
+tmp="$msg.tmp.$$"
+grep -v -i -E '^(Claude-Session:|Co-Authored-By:.*(claude|anthropic))' "$msg" \
+  | sed -E -e 's#\[([^]]*)\]\( *<?https?://(www\.)?claude\.ai([/?#]([^[:space:]<>]*[^[:space:]<>.,;:!?)*_`])?)?>?( +"[^"]*")? *\)#\1#gI' \
+      -e 's#<https?://(www\.)?claude\.ai([/?#]([^[:space:]<>]*[^[:space:]<>.,;:!?)*_`])?)?>##gI' \
+      -e 's#https?://(www\.)?claude\.ai([/?#]([^[:space:]<>]*[^[:space:]<>.,;:!?)*_`])?)?([^[:alnum:].-]|\.[^[:alnum:]]|\.?$)#\4#gI' \
+      -e 's#(^|[^[:alnum:]./-])(www\.)?claude\.ai/([^[:space:]<>]*[^[:space:]<>.,;:!?)*_`])?#\1#gI' > "$tmp"
+# Drop the blank lines left at the end.
+awk 'NF{for(;n>0;n--)print "";print;next}{n++}' "$tmp" > "$msg"
+rm -f "$tmp"
