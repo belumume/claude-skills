@@ -1,0 +1,53 @@
+name: No Claude IDs
+on:
+  push:
+  pull_request:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Reject Claude trailers and claude.ai links in new commits
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+          BEFORE: ${{ github.event.before }}
+          SHA: ${{ github.sha }}
+          REF: ${{ github.ref_name }}
+          DEFAULT: ${{ github.event.repository.default_branch }}
+        run: |
+          # Only commits that are new to the default branch are checked.
+          # Commits already on it were checked when they landed there, so a
+          # branch that is rebased onto, reset to or merged with the default
+          # branch must not be failed again for them (that re-sent the same
+          # failure email on every push).
+          if [ "$EVENT" = "pull_request" ]; then
+            # The base branch's CURRENT tip, not the sha the PR pinned at open.
+            git fetch -q origin "$BASE_REF"
+            set -- "$HEAD" --not FETCH_HEAD
+          elif [ "$REF" = "$DEFAULT" ]; then
+            if [ -n "$BEFORE" ] && git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+              set -- "$BEFORE..$SHA"
+            else
+              set -- "$SHA~1..$SHA"
+            fi
+          else
+            git fetch -q origin "$DEFAULT"
+            if [ -n "$BEFORE" ] && git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+              set -- "$BEFORE..$SHA" --not FETCH_HEAD
+            else
+              # New branch, or a force-push whose old tip is gone.
+              set -- "$SHA" --not FETCH_HEAD
+            fi
+          fi
+          # Trailers are matched only at the start of a line, so a commit
+          # message that merely mentions one in prose is not failed.
+          bad=$(git log --format='%h%n%B' "$@" | grep -i -E '^[[:space:]]*(Claude-Session:|Co-Authored-By:.*(claude|anthropic))|https?://(www\.)?claude\.ai([^[:alnum:].-]|\.([^[:alnum:]]|$)|$)|(^|[^[:alnum:]./-])(www\.)?claude\.ai/' || true)
+          if [ -n "$bad" ]; then
+            echo "Commits carry Claude identifiers (project rule: none):"
+            echo "$bad"
+            exit 1
+          fi
