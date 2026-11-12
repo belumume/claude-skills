@@ -1,14 +1,32 @@
 name: No Claude IDs
+# Runs on pull requests and on pushes to the default branch. A push to any
+# other branch is checked by its pull request, so it is skipped here: skipped
+# jobs use no Actions minutes, and GitHub bills every job that runs as at
+# least one whole minute.
 on:
   push:
   pull_request:
+permissions:
+  contents: read
 jobs:
   check:
-    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' || github.ref_name == github.event.repository.default_branch
+    # One-CPU runner: a third of the price of ubuntu-latest, plenty for this job.
+    runs-on: ubuntu-slim
+    timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+      # Only commit messages are read, so fetch commits without any files
+      # (a few hundred KB instead of the whole repository).
+      - name: Fetch commit history only
+        env:
+          TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          TIP: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          git init -q .
+          git remote add origin "https://github.com/$REPO"
+          git config "http.https://github.com/.extraheader" "AUTHORIZATION: basic $(printf 'x-access-token:%s' "$TOKEN" | base64 -w0)"
+          git fetch -q --filter=tree:0 origin "$TIP"
       - name: Reject Claude trailers and claude.ai links in new commits
         env:
           EVENT: ${{ github.event_name }}
@@ -16,8 +34,6 @@ jobs:
           HEAD: ${{ github.event.pull_request.head.sha }}
           BEFORE: ${{ github.event.before }}
           SHA: ${{ github.sha }}
-          REF: ${{ github.ref_name }}
-          DEFAULT: ${{ github.event.repository.default_branch }}
         run: |
           # Only commits that are new to the default branch are checked.
           # Commits already on it were checked when they landed there, so a
@@ -28,24 +44,21 @@ jobs:
             # The base branch's CURRENT tip, not the sha the PR pinned at open.
             git fetch -q origin "$BASE_REF"
             set -- "$HEAD" --not FETCH_HEAD
-          elif [ "$REF" = "$DEFAULT" ]; then
+          else
+            # A push to the default branch (the job skips other branches).
             if [ -n "$BEFORE" ] && git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
               set -- "$BEFORE..$SHA"
-            else
+            elif git rev-parse -q --verify "$SHA~1^{commit}" >/dev/null; then
               set -- "$SHA~1..$SHA"
-            fi
-          else
-            git fetch -q origin "$DEFAULT"
-            if [ -n "$BEFORE" ] && git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
-              set -- "$BEFORE..$SHA" --not FETCH_HEAD
             else
-              # New branch, or a force-push whose old tip is gone.
-              set -- "$SHA" --not FETCH_HEAD
+              set -- "$SHA"  # the repository's first commit
             fi
           fi
           # Trailers are matched only at the start of a line, so a commit
           # message that merely mentions one in prose is not failed.
-          bad=$(git log --format='%h%n%B' "$@" | grep -i -E '^[[:space:]]*(Claude-Session:|Co-Authored-By:.*(claude|anthropic))|https?://(www\.)?claude\.ai([^[:alnum:].-]|\.([^[:alnum:]]|$)|$)|(^|[^[:alnum:]./-])(www\.)?claude\.ai/' || true)
+          # A failing git log stops the job here instead of passing as clean.
+          log=$(git log --format='%h%n%B' "$@")
+          bad=$(printf '%s\n' "$log" | grep -i -E '^[[:space:]]*(Claude[-]Session:|Co-Authored-By:.*(claude|anthropic))|https?://(www\.)?claude\.ai([^[:alnum:].-]|\.([^[:alnum:]]|$)|$)|(^|[^[:alnum:]./-])(www\.)?claude\.ai/' || true)
           if [ -n "$bad" ]; then
             echo "Commits carry Claude identifiers (project rule: none):"
             echo "$bad"

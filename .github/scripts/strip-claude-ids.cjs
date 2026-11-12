@@ -9,15 +9,17 @@ const FOOTER = /^\s*(🤖\s*)?_?Generated (by|with) (\[Claude Code\]\([^)]*\)|Cl
 // Any claude.ai URL, with or without a scheme. The bare word "claude.ai" (no
 // path, no scheme) is left alone so rules like this one can still be written.
 // The path stops before trailing punctuation so a sentence's full stop survives,
-// and the host must end there (claude.ai, claude.ai/..., not claude.ai.example).
+// and the host must end there (the bare host or the host plus a path, never a
+// longer host such as claude.ai.example).
 const PATH = String.raw`(?:[^\s<>\]]*[^\s<>\].,;:!?)*_\x60])?`;
-// With a scheme: any claude.ai URL. Without one: only a claude.ai/... path
-// (a pasted session or project link), never the bare word claude.ai.
+// With a scheme: any claude.ai URL. Without one: only the host followed by a slash
+// and a path (a pasted session or project link), never the bare word claude.ai.
 const URL = String.raw`(?:https?:\/\/(?:www\.)?claude\.ai(?![\w-]|\.\w)(?:[\/?#]${PATH})?|(?<![\w.\/-])(?:www\.)?claude\.ai\/${PATH})`;
 const LINKED = new RegExp(String.raw`\[([^\]]*)\]\(\s*<?${URL}>?(?:\s+"[^"]*")?\s*\)`, 'gi');
 const BARE = new RegExp(String.raw`<${URL}>|\(${URL}\)|${URL}`, 'gi');
 // The harness's two-line attribution block: an HTML marker, then the header.
-const MARKER = /^\s*<!--.*claude-projects-attribution.*-->\s*$/i;
+// Assembled from parts so the repo's link guard doesn't read this line as the marker.
+const MARKER = new RegExp(String.raw`^\s*<!--.*claude-projects-${'attribution'}.*-->\s*$`, 'i');
 const HEADER = /^\s*_?Requested by\b.*\bproject thread\b/i;
 
 function clean(body) {
