@@ -1,8 +1,13 @@
 name: No Claude IDs
-# Runs on pull requests and on pushes to the default branch. A push to any
-# other branch is checked by its pull request, so it is skipped here: skipped
-# jobs use no Actions minutes, and GitHub bills every job that runs as at
-# least one whole minute.
+# Runs on pull requests and on pushes to the default branch. Skipped here,
+# because skipped jobs use no Actions minutes and GitHub bills every job that
+# runs as at least one whole minute: a push to any other branch (its pull
+# request checks it), and the push of a pull request's merge commit (the
+# pull request run already checked the commits it brings in; the merge
+# commit's own message is GitHub's "Merge pull request #N from ..." line plus
+# the PR title, unless someone types a custom message when merging, which
+# this skip trusts). Direct pushes and rebase merges to the default branch
+# still run.
 on:
   push:
   pull_request:
@@ -10,7 +15,10 @@ permissions:
   contents: read
 jobs:
   check:
-    if: github.event_name == 'pull_request' || github.ref_name == github.event.repository.default_branch
+    if: >-
+      github.event_name == 'pull_request' ||
+      (github.ref_name == github.event.repository.default_branch &&
+       !startsWith(github.event.head_commit.message, 'Merge pull request #'))
     # One-CPU runner: a third of the price of ubuntu-latest, plenty for this job.
     runs-on: ubuntu-slim
     timeout-minutes: 5
