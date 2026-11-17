@@ -90,7 +90,8 @@ Six checks, every line produced by a command in the same run, failing closed: a 
 ERROR and ERROR counts as a blocker; an input the project does not have (no inbox, no HANDOFF, no memory
 directory) is skipped with a printed line. The carriage-return sweep carries its own known-positive control,
 because a zero from a filter is not evidence until that filter has caught a positive in the same run.
-`--selftest` plants one positive per check plus an absent root and a missing task directory (9 of 9).
+`--selftest` plants one positive per check plus an absent root and a missing task directory, and prints its own
+pass count.
 
 It covers: open tasks in the task list (`--tasks-dir`, else `$CLAUDE_CODE_TASK_LIST_ID`); open anti-drop ledger
 commitments for the root and its parents; OPEN operator-inbox rows; HANDOFF's line endings and newest dated
@@ -124,30 +125,13 @@ really mean the whole arc/transcript/work/progress/journey/prompts/lessons/failu
 where your attention/recall is more strong/recent". Enumerate the window from its first record by script or
 indexed read; recall weights the recent end.
 
-**Read its NOTES as well as its blockers.** The names-file check exists because a row was once glued
-to the end of the previous line, which made the recorder print "skipped" and would have silently lost
-a submission's score.
+**Read its NOTES as well as its blockers.** A NOTE is where an input that was skipped shows up; a skipped
+input read as "nothing to report" is how a lost record goes unnoticed.
 
 ## Then do the part the script cannot
 
-The script says so itself at the bottom. These four are where the real answers have come from, and
-each needs a command or a read, not a memory:
-
-1. **Is every `in_progress` task's delegate actually alive?** A task marked in progress with a dead
-   lane is the worst state on this project. Check the lane, do not infer it. If one died, resume it
-   from its transcript rather than relaunching it fresh.
-2. **Did anything learned this session belong somewhere more durable than HANDOFF?** A rule that will
-   govern future sessions belongs in MISSION. A cross-project lesson belongs in a memory file. A
-   thing that must not recur belongs in a control or a guard, not a paragraph. A caveat that lives
-   only inside a document's conclusion is invisible: it must become a task or a control.
-3. **Was any claim made this session that has not been verified since?** Especially a totality claim
-   (all, none, every, clean, N of N) and especially one already sent to the operator or to the
-   science surface.
-4. **Is a correction owed?** To him, or to the other surface. Send it before compacting, not after.
-
-## The audit, whatever the project
-
-Items 1 to 4 are the portable form of the four above; 5 to 7 were added 2026-09-19.
+Each of these needs a command or a read, not a memory. Items 1 to 4 came from the original project's audit;
+5 to 7 were added 2026-09-19.
 
 1. **Is every in-flight delegate actually alive?** A task marked in progress behind a dead lane is
    the worst state to compact on. Check the lane; do not infer it. Resume a dead one from its
@@ -175,19 +159,6 @@ Verdict first, then the evidence, in his terms and not in harness jargon. If yes
 checked and what was fixed in this pass, because "nothing to do" is credible only beside what was
 looked at. If no, say precisely what is outstanding and how long it takes. Never close on a question
 when the action can be taken.
-
-The project copy's phrasing of the same rule (2026-09-16):
-
-Lead with the verdict, then the evidence, in his terms and not in harness jargon. If the answer is
-yes, say what was checked and what was fixed in this pass, because "nothing to do" is only credible
-alongside what was looked at. If the answer is no, say precisely what is outstanding and how long it
-will take.
-
-## If the audit finds something
-
-Fix it, then re-run and quote the clean output. Do not report a finding as acceptable without a
-reason he could check. A note about history predating a convention is fine to leave with that reason
-stated; anything from this session is work.
 
 ## If the audit reports something
 
