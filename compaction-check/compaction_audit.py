@@ -219,7 +219,7 @@ class Audit:
         idx = os.path.join(mem, "MEMORY.md")
         t = io.open(idx, encoding="utf-8", errors="replace").read() if os.path.isfile(idx) else ""
         files = [f for f in os.listdir(mem) if f.endswith(".md") and f != "MEMORY.md"]
-        named = set(re.findall(r"\]\(([^)\s]+\.md)\)", t)) | set(re.findall(r"(?<![\w.-])([\w.-]+\.md)(?![\w.-])", t))
+        named = set(re.findall(r"\]\(([^)\s]+\.md)\)", t)) | set(re.findall(r"(?<![\w./-])([\w.-]+\.md)(?![\w-]|\.\w)", t))
         unindexed = [f for f in files if f not in named]
         print("   %d memory file(s), %d not named in MEMORY.md" % (len(files), len(unindexed)))
         for f in unindexed:
@@ -271,8 +271,9 @@ def selftest() -> int:
         io.open(os.path.join(led, slug(root) + ".jsonl"), "w").write(json.dumps({"h": "abc", "text": "do x"}) + "\n")
         mem = os.path.join(home, ".claude", "projects", slug(root), "memory")
         os.makedirs(mem)
-        io.open(os.path.join(mem, "MEMORY.md"), "w").write("# index\n")
-        io.open(os.path.join(mem, "orphan.md"), "w").write("x\n")
+        io.open(os.path.join(mem, "MEMORY.md"), "w").write("# index\n- [D](data.md)\n- [x](sub/a.md)\nsee listed.md.\n")
+        for name in ("orphan.md", "data.md", "a.md", "listed.md"):
+            io.open(os.path.join(mem, name), "w").write("x\n")
         dirty = Audit(root, home, tasks, 24)
         rc = dirty.run()
         txt = "\n".join(x for _s, x in dirty.findings)
@@ -282,6 +283,9 @@ def selftest() -> int:
             ("planted open inbox row caught", "operator inbox row open" in txt),
             ("planted open ledger commitment is a BLOCK", any(s == "BLOCK" and "abc" in x for s, x in dirty.findings)),
             ("planted unindexed memory file caught", "orphan.md" in txt),
+            ("a.md inside data.md or sub/a.md is still unindexed", "not in the index: a.md" in txt),
+            ("linked data.md and sentence-final listed.md count as indexed",
+             "not in the index: data.md" not in txt and "not in the index: listed.md" not in txt),
             ("dirty project exits 1", rc == 1),
         ]
         io.open(os.path.join(led, slug(td) + ".jsonl"), "w").write(json.dumps({"h": "zzz", "text": "parent"}) + "\n")
