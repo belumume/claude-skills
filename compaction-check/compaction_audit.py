@@ -219,7 +219,8 @@ class Audit:
         idx = os.path.join(mem, "MEMORY.md")
         t = io.open(idx, encoding="utf-8", errors="replace").read() if os.path.isfile(idx) else ""
         files = [f for f in os.listdir(mem) if f.endswith(".md") and f != "MEMORY.md"]
-        unindexed = [f for f in files if f not in t]
+        named = set(re.findall(r"\]\(([^)\s]+\.md)\)", t)) | set(re.findall(r"(?<![\w.-])([\w.-]+\.md)(?![\w.-])", t))
+        unindexed = [f for f in files if f not in named]
         print("   %d memory file(s), %d not named in MEMORY.md" % (len(files), len(unindexed)))
         for f in unindexed:
             self.add("NOTE", "memory file not in the index: " + f)
